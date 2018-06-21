@@ -1,19 +1,6 @@
-#include <boost/type_index.hpp>
 #include <iostream>
 
-template <typename T>
-auto T_name()
-  noexcept(noexcept(boost::typeindex::type_id_with_cvr<T>().pretty_name()))
-{
-  return boost::typeindex::type_id_with_cvr<T>().pretty_name();
-}
-
-template <typename T>
-auto T_name(T)
-  noexcept(noexcept(T_name<T>()))
-{
-  return T_name<T>();
-}
+#include "util.hpp"
 
 void behaviour0() {
   constexpr auto utf8_char = u8"あ";
@@ -22,6 +9,7 @@ void behaviour0() {
   std::cout << "typeindex::type_id_with_cvrが返す型は？ "
             << T_name(T_name(1)) << "(size:" << sizeof(TNameType) << ")"
             << std::endl;
+  // => std::string だった
 }
 
 int main(int, char**) {
