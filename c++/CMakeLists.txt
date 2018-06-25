@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-O2 -Wall")
+set(CMAKE_CXX_FLAGS "-O2 -g -Wall")
 add_executable(hana0 hana0.cxx)
 add_executable(behaviour behaviour.cxx)
+add_executable(async0 async0.cxx)
+target_link_libraries(async0 pthread)

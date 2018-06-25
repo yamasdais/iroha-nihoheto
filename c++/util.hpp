@@ -11,7 +11,7 @@ auto T_name()
 }
 
 template <typename T>
-auto T_name(T)
+auto T_name(T const&)
   noexcept(noexcept(T_name<T>()))
 {
   return T_name<T>();
