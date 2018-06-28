@@ -2,7 +2,7 @@
 
 ## pip ##
 
-ubuntu の python には pip が入っていなかった。
+ubuntu の python にはデフォルトでは pip が入っていなかった。
 
 ```
 $ sudo apt install python3-pip
@@ -46,3 +46,25 @@ $ python3 -m venv [環境名]
 
 ### buildout ###
 デプロイも含めたパワフルなツールらしいので複数人向けプロジェクトに向いているようだ。
+
+
+## Jupyter notebook ##
+Ubuntu 18.04 だとパッケージがあるようなので試してみる。
+
+
+```
+$ sudo apt install jupyter-core python3-notebook python-ipykernel
+$ jupyter notebook --generate-config
+Error executing Jupyter command 'notebook': [Errno 2] No such file or directory
+```
+
+エラーが出る。どうもパッケージの整合性が取れていないようなので、pip でインストールし直す。
+
+```
+$ pip3 install --upgrade --force-reinstall jupyter
+... update処理が動く
+$ jupyter notebook --generate-config
+Writing default config to: /home/dais/.jupyter/jupyter_notebook_config.py
+$ jupyter notebook
+ブラウザが起動して、notebook 入力可能状態になる
+```
