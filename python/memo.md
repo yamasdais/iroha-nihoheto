@@ -49,7 +49,7 @@ $ python3 -m venv [環境名]
 
 
 ## Jupyter notebook ##
-Ubuntu 18.04 だとパッケージがあるようなので試してみる。
+Ubuntu 18.04 だとパッケージがあるようなので、これを使って試してみる。
 
 
 ```
@@ -58,13 +58,43 @@ $ jupyter notebook --generate-config
 Error executing Jupyter command 'notebook': [Errno 2] No such file or directory
 ```
 
-エラーが出る。どうもパッケージの整合性が取れていないようなので、pip でインストールし直す。
+エラーが出る。どうもパッケージの整合性が取れていない、という事の様なので、pip でインストールし直す。
 
 ```
 $ pip3 install --upgrade --force-reinstall jupyter
 ... update処理が動く
 $ jupyter notebook --generate-config
 Writing default config to: /home/dais/.jupyter/jupyter_notebook_config.py
-$ jupyter notebook
+$ jupyter notebook # jupyter-notebook でもいいようだ
 ブラウザが起動して、notebook 入力可能状態になる
 ```
+
+### kernel 追加 ###
+仮想環境毎に kernel を用意しておけば、notebook 作成時に
+所望の kernel を選ぶだけで環境を切り分けられるので便利だろう。
+venv で環境作成して、その仮想環境を ipython から参照させる。
+例えば scikit-learn を使って何やかんやしたいということであれば
+
+```
+$ python3 -m venv scilrn
+$ . ~/.pylib/scilrn/bin/activate  # これ以降 venv での作業
+(scilrn) $ pip3 install jupyter
+(scilrn) $ pip3 install ipykernel
+(scilrn) $ pip3 install scikit-learn numpy scipy
+(scilrn) $ ipython3 kernel install --user --name scilrn --display-name "scikit-learn"
+```
+
+これで、notebook の kernel で scikit-learn という項目が選択できる様になっているはず。
+
+Windows だと anaconda で conda を使った kernel 切り替えのやり方が
+（ググれば）色々見つかる。
+
+## matplotlib ##
+matplotlib を import しようとすると、tkinter モジュールがない、というエラーになる。
+
+
+```
+ModuleNotFoundError: No module named 'tkinter'
+```
+
+これは、ubuntu の python3-tk パッケージをインストールすれば解決した。
