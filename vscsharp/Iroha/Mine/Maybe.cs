@@ -39,8 +39,8 @@ namespace com.gmail.yamasdais.mine
 
         public static readonly Maybe<T> Nothing = new Maybe<T>();
 
-        public static implicit operator Maybe<T>(Maybe<Maybe<T>> flattenMaybe)
-            => flattenMaybe.HasValue ? flattenMaybe.Value : Nothing;
+        public static implicit operator Maybe<T>(Maybe<Maybe<T>> nestedMaybe)
+            => nestedMaybe.HasValue ? nestedMaybe.Value : Nothing;
 
         public override int GetHashCode()
             => unchecked(
