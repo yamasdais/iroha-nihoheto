@@ -1,0 +1,71 @@
+﻿<Window x:Class="RegexSensei.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RegexSensei"
+        mc:Ignorable="d"
+        Title="{Binding WT_Application, Mode=OneWay, Source={StaticResource resources}}" Height="350" Width="525">
+    <Window.DataContext>
+        <local:RegexSenseiViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DockPanel Margin="0,0,0,0">
+            <ToggleButton DockPanel.Dock="Top" VerticalAlignment="Top" Loaded="ToggleButton_Loaded">
+                <ToggleButton.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_IgnoreCase, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding IgnoreCase.Value}"/>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_Multiline, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding Multiline.Value}"/>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_ExplicitCapture, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding ExplicitCapture.Value}"/>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_Compiled, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding Compiled.Value}"/>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_Singleline, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding Singleline.Value}"/>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_IgnorePatternWhitespace, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding IgnorePatternWhitespace.Value}"/>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_RightToLeft, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding RightToLeft.Value}"/>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_ECMAScript, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding ECMAScript.Value}"/>
+                        <MenuItem IsCheckable="True" Header="{Binding MenuItem_CultureInvariant, Mode=OneWay, Source={StaticResource resources}}" IsChecked="{Binding CultureInvariant.Value}"/>
+                    </ContextMenu>
+                </ToggleButton.ContextMenu>
+                <WrapPanel>
+                    <TextBlock Text="{Binding LB_ReOptions, Mode=OneWay, Source={StaticResource resources}}"/>
+                    <Border Width="8"/>
+                    <Path Width="6" Height="4" Stretch="Fill" Fill="Black" Data="F1 M0,0 L10,0 L5,10 Z "/>
+                </WrapPanel>
+            </ToggleButton>
+            <Button DockPanel.Dock="Bottom" Content="{Binding Button_RunRegex, Mode=OneWay, Source={StaticResource resources}}" Command="{Binding RunMatchRegex, Mode=OneWay}"/>
+            <TextBox x:Name="textBox" Text="{Binding InputPattern.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Top"
+                 TextWrapping="Wrap" Margin="0,0,0,0" MinWidth="100" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                 VerticalScrollBarVisibility="Auto" AutomationProperties.HelpText="Pattern" AcceptsReturn="True"/>
+        </DockPanel>
+        <Grid Grid.Row="0" Grid.Column="2">
+            <TextBox Text="{Binding Text.Value, Mode=OneWayToSource}"
+                 TextWrapping="Wrap" Margin="0,0,0,0" MinWidth="100" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                 VerticalScrollBarVisibility="Auto" AutomationProperties.HelpText="Pattern" AcceptsReturn="True"/>
+        <!--<RichTextBox Block.LineHeight="1" local:RichTextBoxHelper.DocumentXaml="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>-->
+          <!--  <local:BindableRichTextBox Document="{Binding Path=DocumentModel}"/>-->
+        </Grid>
+            <!--<local:BindableRichTextBox Grid.Row="2" Grid.ColumnSpan="3"
+                                       Document="{Binding RegexSenseiViewModel.OutputDocument}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Focusable="False" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>-->
+            <RichTextBox local:RichTextBoxHelper.DocumentXaml="{Binding OutputMessage}" Grid.Row="2" Grid.ColumnSpan="3"
+                                       HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Focusable="False" IsReadOnly="True" IsReadOnlyCaretVisible="True"/>
+        <GridSplitter x:Name="HorizontalSplitter" HorizontalAlignment="Stretch" Margin="0,0.2,0.4,0.4" Grid.Row="1" Grid.ColumnSpan="3" HorizontalContentAlignment="Stretch" Height="5"/>
+        <GridSplitter x:Name="gridSplitter1" HorizontalAlignment="Stretch" Height="Auto" Margin="0,0,0,0" Width="5" Grid.Column="1"/>
+        <StatusBar Height="Auto" Margin="0" VerticalAlignment="Bottom" Grid.Row="4" Grid.ColumnSpan="3">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage.Value, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>
