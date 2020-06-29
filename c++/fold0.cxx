@@ -7,9 +7,11 @@ auto prnt_(T&& v)
 }
 
 // 非テンプレートの関数でもオーバーロードできるのか。
+#if false
 auto prnt_(std::string&& v) {
   return std::string{'['} + v + std::string{']'};
 }
+#endif
 
 template <typename... T>
 void prnt_im(T&&... args)
