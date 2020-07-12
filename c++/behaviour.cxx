@@ -31,12 +31,12 @@ void behaviour0() {
 void b1() {
   using a = CastChar<wchar_t, char>;
   using b = CastChar<char, char>;
-  constexpr auto c = a::template apply<0x80>;
+  constexpr auto c = a::template apply<(char)0x80>;
 
   std::cout << "b1: " << T_name<a>() << std::endl;
   std::cout << "c: " << T_name(c) << ", " << (int)c << std::endl;
   std::cout << "C: " << (int)static_cast<wchar_t>((char)0x80) << std::endl;
-  std::cout << "cb: " << (int)b::apply<0x80> << std::endl;
+  std::cout << "cb: " << (int)b::apply<(char)0x80> << std::endl;
 }
 
 int main(int, char**) {
