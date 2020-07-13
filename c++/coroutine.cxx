@@ -1,10 +1,20 @@
 #include <iostream>
 #include <utility>
-#include <coroutine>
+#if defined(_MSC_VER)
+# include <experimental/coroutine>
+#else
+# include <coroutine>
+#endif
+
+#if defined(_MSC_VER)
+namespace crns = std::experimental;
+#else
+namespace crns = std;
+#endif
 
 struct cogen {
     struct promise_type;
-    using handle = std::coroutine_handle<promise_type>;
+    using handle = crns::coroutine_handle<promise_type>;
     struct promise_type {
         int current_value;
         static auto get_return_object_on_allocation_failure() {
@@ -14,10 +24,10 @@ struct cogen {
             return cogen{handle::from_promise(*this)};
         }
         auto initial_suspend() noexcept {
-            return std::suspend_always{};
+            return crns::suspend_always{};
         }
         auto final_suspend() noexcept {
-            return std::suspend_always{};
+            return crns::suspend_always{};
         }
         void unhandled_exception() {
             std::terminate();
@@ -26,7 +36,7 @@ struct cogen {
         void return_void() {}
         auto yield_value(int value) {
             current_value = value;
-            return std::suspend_always{};
+            return crns::suspend_always{};
         }
     };
 
@@ -70,6 +80,14 @@ cogen f() {
 }
 
 void coro_loop() {
+    auto coroutine_ver =
+#if defined(__cpp_coroutines)
+        __cpp_coroutines
+#else
+        0
+#endif
+        ;
+    std::cout << "__cpp_coroutines: " << coroutine_ver << std::endl;
     auto g = f();
     std::cout << "before loop" << std::endl;
     while (g.move_next()) {
