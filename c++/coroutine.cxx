@@ -11,20 +11,6 @@ namespace crns = std::experimental;
 # error "Cannot find coroutine header."
 #endif
 
-#if 0
-#if !defined(__cpp_coroutines) || __cpp_coroutines < 201902L
-# include <experimental/coroutine>
-#else
-# include <coroutine>
-#endif
-
-#if defined(_MSC_VER)
-namespace crns = std::experimental;
-#else
-namespace crns = std;
-#endif
-#endif
-
 struct cogen {
     struct promise_type;
     using handle = crns::coroutine_handle<promise_type>;
