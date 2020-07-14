@@ -1,6 +1,18 @@
 #include <iostream>
 #include <utility>
-#if defined(_MSC_VER)
+
+#if __has_include(<coroutine>)
+# include <coroutine>
+namespace crns = std;
+#elif __has_include(<experimental/coroutine>)
+# include <experimental/coroutine>
+namespace crns = std::experimental;
+#else
+# error "Cannot find coroutine header."
+#endif
+
+#if 0
+#if !defined(__cpp_coroutines) || __cpp_coroutines < 201902L
 # include <experimental/coroutine>
 #else
 # include <coroutine>
@@ -10,6 +22,7 @@
 namespace crns = std::experimental;
 #else
 namespace crns = std;
+#endif
 #endif
 
 struct cogen {
