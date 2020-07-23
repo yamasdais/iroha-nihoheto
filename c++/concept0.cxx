@@ -1,10 +1,13 @@
+#include <concepts>
 #include <iostream>
 #include <boost/type_index.hpp>
 
 struct CT0 {
     int n;
 
-    explicit CT0(int n)
+    //CT0(int n)
+    template <std::integral T>
+    CT0(T n)
     : n(n){}
 };
 
@@ -55,7 +58,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
     result = fn0(iv, 42);
 
     CT1 c1v{1.2f};
-    result = fn0(c1v, CT1{2.3});
+    result = fn0(c1v, CT1{2.3f});
 
     float fv = 3.1f;
     result = fn0(fv, 22.4f);

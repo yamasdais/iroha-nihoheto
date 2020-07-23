@@ -50,7 +50,7 @@ struct cogen {
     }
 
     cogen(cogen const&) = delete;
-    cogen(cogen&& src)
+    cogen(cogen&& src) noexcept
       : coro(std::exchange(src.coro, nullptr)) {
     }
 
