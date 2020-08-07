@@ -139,7 +139,8 @@ void testInvocableLmbd() {
 
 // general generic lambda macro
 #define ReturnTypeSnippet(...) noexcept(noexcept(__VA_ARGS__)) -> decltype(__VA_ARGS__)
-#if defined(__cpp_generic_lambdas) && __cpp_generic_lambdas >= 201707L
+//#if defined(__cpp_generic_lambdas) && __cpp_generic_lambdas >= 201707L
+#if 0
 #define MakeEmptyLambdaFromFunction(FUNC) \
     []<class... _a>(_a&&... arg) ReturnTypeSnippet(FUNC(std::forward<_a>(arg)...)) {}
 #else
