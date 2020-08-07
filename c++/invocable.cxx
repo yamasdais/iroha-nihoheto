@@ -138,9 +138,14 @@ void testInvocableLmbd() {
 }
 
 // general generic lambda macro
+#define ReturnTypeSnippet(...) noexcept(noexcept(__VA_ARGS__)) -> decltype(__VA_ARGS__)
+#if defined(__cpp_generic_lambdas) && __cpp_generic_lambdas >= 201707L
 #define MakeEmptyLambdaFromFunction(FUNC) \
-    [](auto&&...args) -> decltype(FUNC(std::forward<decltype(args)>(args)...)) {}
-
+    []<class... _a>(_a&&... arg) ReturnTypeSnippet(FUNC(std::forward<_a>(arg)...)) {}
+#else
+#define MakeEmptyLambdaFromFunction(FUNC) \
+    [](auto&&... arg) ReturnTypeSnippet(FUNC(std::forward<decltype(arg)>(arg)...)) {}
+#endif
 template <class T, class U>
 void testInvocableLambdaMacro() {
     auto constexpr lmbd = MakeEmptyLambdaFromFunction(ovlFoo);
