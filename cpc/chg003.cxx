@@ -29,7 +29,7 @@ auto doCalc() {
     }
     using namespace std;
     //auto result = accumulate(begin(nums), end(nums), 1u, challenge100::lcm<decltype(nums)::value_type>);
-    auto result = challenge100::lcmr(begin(nums), end(nums));
+    auto result = challenge100::lcmr(cbegin(nums), cend(nums));
     std::cout << "LCM: " << result << std::endl;;
 }
 
