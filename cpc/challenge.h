@@ -36,16 +36,14 @@ constexpr auto lcmr(Iter s, Iter e)
     return std::accumulate(s, e, static_cast<T>(1), lcm<T>);
 }
 
-template <class Num>
-    requires std::integral<Num>
+template <std::integral Num>
 bool is_prime(Num num) {
-    if (num < 2) return false;
-    else if (num == 2) return true;
-    else if ((num & 0x1) == 0) return false;
+    if (num <= 3) return num > 1;
+    else if ((num & 0x1) == 0 || num % 3 == 0) return false;
 
-    double end = std::sqrt(static_cast<double>(num));
-    for (Num i = 3; i <= end; i += 2) {
-        if (num % i == 0)
+    Num rt = std::sqrt(num);
+    for (Num i = 5; i <= rt; i += 6) {
+        if (num % i == 0 || num % (i+2) == 0)
             return false;
     }
     return true;

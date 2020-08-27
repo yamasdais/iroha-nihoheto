@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 //#include <format>
+#include <ranges>
 #include <numeric>
 #include "challenge.h"
 
@@ -27,9 +28,7 @@ auto doCalc() {
         std::cout << "not enough number" << std::endl;
         return;
     }
-    using namespace std;
-    //auto result = accumulate(begin(nums), end(nums), 1u, challenge100::lcm<decltype(nums)::value_type>);
-    auto result = challenge100::lcmr(cbegin(nums), cend(nums));
+    auto result = challenge100::lcmr(std::ranges::cbegin(nums), std::ranges::cend(nums));
     std::cout << "LCM: " << result << std::endl;;
 }
 
