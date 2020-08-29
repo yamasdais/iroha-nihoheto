@@ -8,7 +8,7 @@ int main(int, char**) {
     std::cout << "Num 2nd: ";
     std::cin >> snd;
 
-    auto result = challenge100::gcd(fst, snd);
+    auto result = cpc::gcd(fst, snd);
     std::cout << "GCD: " << result << std::endl;;
     return 0;
 }

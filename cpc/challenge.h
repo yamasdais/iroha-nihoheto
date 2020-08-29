@@ -49,6 +49,6 @@ bool is_prime(Num num) {
     return true;
 }
 
-
 }
 
+namespace cpc = challenge100;

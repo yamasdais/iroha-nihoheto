@@ -7,7 +7,7 @@ int main(int, char**) {
     std::cin >> upper;
 
     for (auto i = upper; i > 1; i--) {
-        if (challenge100::is_prime(i)) {
+        if (cpc::is_prime(i)) {
             std::cout << "max prime number: " << i << std::endl;
             break;
         }

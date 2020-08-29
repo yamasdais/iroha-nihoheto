@@ -28,7 +28,7 @@ auto doCalc() {
         std::cout << "not enough number" << std::endl;
         return;
     }
-    auto result = challenge100::lcmr(std::ranges::cbegin(nums), std::ranges::cend(nums));
+    auto result = cpc::lcmr(std::ranges::cbegin(nums), std::ranges::cend(nums));
     std::cout << "LCM: " << result << std::endl;;
 }
 
