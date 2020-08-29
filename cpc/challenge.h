@@ -46,6 +46,20 @@ bool is_prime(Num num) {
     return true;
 }
 
+template <std::integral Num>
+Num sum_proper_divisors(Num const number) {
+    Num result = 1;
+    Num const rt = static_cast<Num>(std::sqrt(number));
+    for (Num i = 2; i <= rt; i++) {
+        if (number % i == 0) {
+            result += (i == (number / i)) ? i : (i + number / i);
+        }
+    }
+
+    return result;
+}
+
+
 }  // namespace challenge100
 
 namespace cpc = challenge100;
