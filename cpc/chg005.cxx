@@ -1,20 +1,20 @@
 #include <iostream>
 #include <algorithm>
 #include <ranges>
-#include <vector>
+#include <array>
 #include "challenge.h"
 
-template <std::integral Num>
-bool check_sexy_primes(Num base, int count) {
-    auto primes = std::vector<Num>{};
-    primes.reserve(count);
-    auto nums = std::ranges::iota_view{0, count}
+template <int Count, std::integral Num>
+bool check_sexy_primes(Num base) {
+    static_assert(Count > 1, "Count must be larger than 1");
+    auto primes = std::array<Num, Count>();
+    auto itrPrime = std::ranges::begin(primes);
+    auto nums = std::ranges::iota_view{0, Count}
                 | std::views::transform([base](auto const n) { return base + n * 6; });
-    // std::ranges::copy(nums, std::back_inserter(primes));
     if (std::all_of(std::ranges::cbegin(nums), std::ranges::cend(nums),
-                    [&primes](auto const v) {
+                    [&itrPrime](auto const v) {
                         if (cpc::is_prime(v)) {
-                            primes.push_back(v);
+                            *itrPrime++ = v;
                             return true;
                         }
                         return false;
@@ -35,7 +35,7 @@ int main(int, char**) {
     std::cin >> upper;
 
     for (decltype(upper) i = 2; i <= upper; i++) {
-        check_sexy_primes(i, 4);
+        check_sexy_primes<4>(i);
     }
 
     return 0;
