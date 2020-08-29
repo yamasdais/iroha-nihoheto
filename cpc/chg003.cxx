@@ -1,8 +1,9 @@
 #include <iostream>
 #include <list>
 //#include <format>
-#include <ranges>
 #include <numeric>
+#include <ranges>
+
 #include "challenge.h"
 
 auto getNumber(int order) {
@@ -21,7 +22,8 @@ auto doCalc() {
     std::cout << "(enter 0 to exit)" << std::endl;
     while (true) {
         num = getNumber(order++);
-        if (num == 0) break;
+        if (num == 0)
+            break;
         nums.emplace_back(num);
     }
     if (std::size(nums) <= 1) {
@@ -29,7 +31,8 @@ auto doCalc() {
         return;
     }
     auto result = cpc::lcmr(std::ranges::cbegin(nums), std::ranges::cend(nums));
-    std::cout << "LCM: " << result << std::endl;;
+    std::cout << "LCM: " << result << std::endl;
+    ;
 }
 
 int main(int, char**) {

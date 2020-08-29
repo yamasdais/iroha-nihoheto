@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "challenge.h"
 
 int main(int, char**) {

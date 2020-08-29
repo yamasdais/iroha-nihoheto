@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "challenge.h"
 
 int main(int, char**) {
@@ -9,6 +10,7 @@ int main(int, char**) {
     std::cin >> snd;
 
     auto result = cpc::gcd(fst, snd);
-    std::cout << "GCD: " << result << std::endl;;
+    std::cout << "GCD: " << result << std::endl;
+    ;
     return 0;
 }
