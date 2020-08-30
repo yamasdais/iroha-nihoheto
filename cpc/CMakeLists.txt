@@ -13,6 +13,13 @@ macro(make_execs)
     endforeach(src)
 endmacro()
 
+macro(lsp_createdb)
+    find_program(LSPDB compiledb)
+    if(LSPDB)
+        exec_program(${LSPDB} ARGS -o ${CMAKE_SOURCE_DIR}/compile_command.json make)
+    endif()
+endmacro()
+
 #add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 
