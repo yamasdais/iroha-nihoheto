@@ -1,58 +1,64 @@
-#include <iostream>
-#include <ranges>
-#include <numeric>
-#include <cmath>
 #include <array>
+#include <cmath>
+#include <iostream>
+#include <numeric>
+#include <ranges>
 
-template <int width>
-using ValArray = std::array<int, width>;
+template <size_t width>
+using ValArray = std::array<unsigned long, width>;
 
-auto makeIota(int index) {
-    return std::ranges::iota_view(index == 0 ? 1 : 0, 10);
+auto makeIota(size_t index) {
+    return std::ranges::iota_view(index == 0 ? 1u : 0u, 10u);
 }
 
-template <int width>
-auto makeValue(int index, int value, ValArray<width>& ary) {
-    ary[index] = value;
+template <class Iter, class T>
+    requires std::random_access_iterator<Iter>&&
+        std::assignable_from<std::iter_reference_t<Iter>, T>
+auto makeValue(size_t index, T value, Iter ptr) {
+    ptr[index] = value;
 }
 
-template <int width>
-auto printValue(ValArray<width> const& ary) {
-    for (auto v : ary) {
-        std::cout << v;
-    }
+template <class Iter>
+auto printValue(Iter const b, Iter const e) {
+    std::for_each(b, e, [](auto const n) { std::cout << n; });
     std::cout << ",";
 }
 
-template <int width>
-auto calcValue(ValArray<width> const& ary) {
+template <class T>
+auto calcValue(T const& ary) {
     return std::accumulate(std::cbegin(ary), std::cend(ary), 0,
-            [](auto acc, auto i) { acc *= 10; return acc + i; });
+                           [](auto acc, auto i) {
+                               acc *= 10;
+                               return acc + i;
+                           });
 }
 
-template <int width>
-auto calcArmstrong(ValArray<width> const& ary) {
-    return std::accumulate(std::cbegin(ary), std::cend(ary), 0,
-            [](auto acc, auto i) { return acc + std::pow(i, width); });
+template <class Iter>
+requires std::sized_sentinel_for<Iter, Iter>
+auto calcArmstrong(Iter const b, Iter const e) {
+    auto size = std::distance(b, e);
+    return std::accumulate(b, e, 0,
+        [size](auto acc, auto i) { return acc + std::pow(i, size); });
 }
 
-template <int width>
-void makeArray(ValArray<width>& ary, int index = 0) {
+template <size_t width>
+void makeArray(ValArray<width>& ary, size_t index = 0) {
     auto r = std::ranges::iota_view(index, width);
     for (auto n : r) {
         auto iio = makeIota(n);
         for (auto i : iio) {
-            makeValue<width>(n, i, ary);
+            // makeValue<width>(n, i, ary);
+            makeValue(n, i, std::ranges::begin(ary));
             if (n == index && index < width - 1) {
-                //std::cout << n << "@" << index << "|";
+                // std::cout << n << "@" << index << "|";
                 makeArray<width>(ary, n + 1);
             } else if (index == width - 1 && n == width - 1) {
-                //std::cout << "[" << n << "@" << index << "]";
-                auto sum = calcValue<width>(ary);
-                auto arm = calcArmstrong<width>(ary);
+                // std::cout << "[" << n << "@" << index << "]";
+                auto sum = calcValue(ary);
+                auto arm = calcArmstrong(std::ranges::cbegin(ary), std::ranges::cend(ary));
                 if (sum == arm) {
-                    //std::cout << "[" << sum << "," << arm << "]";
-                    printValue<width>(ary);
+                    // std::cout << "[" << sum << "," << arm << "]";
+                    printValue(std::ranges::cbegin(ary), std::ranges::cend(ary));
                 }
             }
         }
@@ -61,9 +67,9 @@ void makeArray(ValArray<width>& ary, int index = 0) {
 
 int main(int, char**) {
     auto constexpr width = 4;
-    auto ary = std::array<int, width>();
+    auto ary = ValArray<width>();
     std::cout << std::boolalpha;
-    makeArray<width>(ary);
+    makeArray<ary.size()>(ary);
     std::cout << std::endl;
     return 0;
 }
