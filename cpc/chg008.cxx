@@ -7,8 +7,8 @@
 template <size_t width>
 using ValArray = std::array<unsigned long, width>;
 
-auto makeIota(size_t index) {
-    return std::ranges::iota_view(index == 0 ? 1u : 0u, 10u);
+auto makeIota(bool isFirst) {
+    return std::ranges::iota_view(isFirst ? 1u : 0u, 10u);
 }
 
 template <class Iter, class T>
@@ -24,15 +24,6 @@ auto printValue(Iter const b, Iter const e) {
     std::cout << ",";
 }
 
-template <class T>
-auto calcValue(T const& ary) {
-    return std::accumulate(std::cbegin(ary), std::cend(ary), 0,
-                           [](auto acc, auto i) {
-                               acc *= 10;
-                               return acc + i;
-                           });
-}
-
 template <class Iter>
 requires std::sized_sentinel_for<Iter, Iter>
 auto calcArmstrong(Iter const b, Iter const e) {
@@ -41,25 +32,20 @@ auto calcArmstrong(Iter const b, Iter const e) {
         [size](auto acc, auto i) { return acc + std::pow(i, size); });
 }
 
-template <size_t width>
-void makeArray(ValArray<width>& ary, size_t index = 0) {
-    auto r = std::ranges::iota_view(index, width);
-    for (auto n : r) {
-        auto iio = makeIota(n);
-        for (auto i : iio) {
-            // makeValue<width>(n, i, ary);
-            makeValue(n, i, std::ranges::begin(ary));
-            if (n == index && index < width - 1) {
-                // std::cout << n << "@" << index << "|";
-                makeArray<width>(ary, n + 1);
-            } else if (index == width - 1 && n == width - 1) {
-                // std::cout << "[" << n << "@" << index << "]";
-                auto sum = calcValue(ary);
-                auto arm = calcArmstrong(std::ranges::cbegin(ary), std::ranges::cend(ary));
-                if (sum == arm) {
-                    // std::cout << "[" << sum << "," << arm << "]";
-                    printValue(std::ranges::cbegin(ary), std::ranges::cend(ary));
-                }
+template <class Iter>
+void accumNums(Iter s, Iter e, size_t index) {
+    auto iter = makeIota(index == 0);
+    auto remain = std::distance(s, e) - index;
+    for (auto i : iter) {
+        makeValue(index, i, s);
+        if (remain > 1) {
+            accumNums(s, e, index + 1);
+        } else {
+            auto sum = std::accumulate(s, e, 0, [](auto acc, auto n) { return acc * 10 + n; });
+            auto arm = calcArmstrong(s, e);
+            if (sum == arm) {
+                // std::cout << "[" << sum << "," << arm << "]";
+                printValue(s, e);
             }
         }
     }
@@ -68,8 +54,8 @@ void makeArray(ValArray<width>& ary, size_t index = 0) {
 int main(int, char**) {
     auto constexpr width = 4;
     auto ary = ValArray<width>();
-    std::cout << std::boolalpha;
-    makeArray<ary.size()>(ary);
+    //std::cout << std::boolalpha;
+    accumNums(std::ranges::begin(ary), std::ranges::end(ary), 0);
     std::cout << std::endl;
     return 0;
 }
