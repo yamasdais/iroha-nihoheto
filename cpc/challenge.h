@@ -2,9 +2,32 @@
 #include <cmath>
 #include <concepts>
 #include <iterator>
+#include <array>
 #include <numeric>
 
 namespace challenge100 {
+
+template <class>
+struct ArraySizeDetector : public std::false_type {};
+
+template <class T, size_t N>
+struct ArraySizeDetector<std::array<T, N>> : public std::true_type {
+    constexpr static size_t size = N;
+};
+
+template <class T>
+  requires std::ranges::range<T>
+auto constexpr toIters(T& container)
+-> std::pair<decltype(std::ranges::begin(container)), decltype(std::ranges::end(container))> {
+    return std::make_pair(std::ranges::begin(container), std::ranges::end(container));
+}
+
+template <class T>
+  requires std::ranges::range<T>
+auto constexpr toIters(T const& container)
+-> std::pair<decltype(std::ranges::cbegin(container)), decltype(std::ranges::cend(container))> {
+    return std::make_pair(std::ranges::cbegin(container), std::ranges::cend(container));
+}
 
 template <class T>
 concept gcd_type = requires(T v) {
