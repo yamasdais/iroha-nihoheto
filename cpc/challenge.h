@@ -3,6 +3,7 @@
 #include <concepts>
 #include <iterator>
 #include <array>
+#include <vector>
 #include <numeric>
 
 namespace challenge100 {
@@ -81,6 +82,28 @@ Num sum_proper_divisors(Num const number) {
 
     return result;
 }
+
+template <std::unsigned_integral Num>
+std::vector<Num> prime_factors(Num n) {
+    std::vector<Num> ret;
+    while (n % 2 == 0) {
+        ret.push_back(2);
+        n /= 2;
+    }
+    Num const rt = static_cast<Num>(std::sqrt(n));
+    for (Num i = 3; i <= rt; i += 2) {
+        while (n % i == 0) {
+            ret.push_back(i);
+            n /= i;
+        }
+    }
+
+    if (n > 2)
+        ret.push_back(n);
+
+    return ret;
+}
+
 
 
 }  // namespace challenge100
