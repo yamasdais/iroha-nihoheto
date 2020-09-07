@@ -21,8 +21,7 @@ struct ArraySizeDetector<std::array<T, N>> : public std::true_type {
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
              class BinaryFn, class Init, class Proj = std::identity>
-        requires std::same_as<Init,
-            std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>>
+        requires std::convertible_to<std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>, Init>
     constexpr Init operator()(IStart st, IEnd en, Init&& init, BinaryFn&& func, Proj proj = {}) const {
         Init ret = std::forward<Init>(init);
         for (; st != en; ++st) {
@@ -31,13 +30,11 @@ struct accum_fn {
         return ret;
     }
 
-    template <std::ranges::forward_range Range, class BinaryFn, class Init,
-             class Proj = std::identity>
+    template <std::ranges::forward_range Range, class BinaryFn, class Init, class Proj = std::identity>
     constexpr Init operator()(Range&& range, Init&& init, BinaryFn&& func, Proj proj = {}) const {
         return (*this)(std::ranges::begin(range), std::ranges::end(range), std::forward<Init>(init),
                std::forward<BinaryFn>(func), std::move(proj));
     }
-
 };
 
 inline constexpr accum_fn accum = accum_fn{};

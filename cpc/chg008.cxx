@@ -48,11 +48,10 @@ void buildAryVar(T& ary, size_t index = 0) {
         if (remain > 1) {
             buildAryV(ary, index + 1);
         } else {
-            auto [start, end] = cpc::toIters(ary);
-            auto sum = std::accumulate(start, end, 0,
+            auto sum = cpc::accum(ary, 0ul,
                     [](auto acc, auto n) { return acc * 10 + n; });
-            auto arm = std::accumulate(start, end, 0,
-                    [size](auto acc, auto i) { return acc + std::pow(i, size); });
+            auto arm = cpc::accum(ary, 0ul,
+                    [size](auto acc, auto i) { return static_cast<std::iter_value_t<T>>(acc + std::pow(i, size)); });
             if (sum == arm) {
                 std::ranges::for_each(ary, [](auto const n) { std::cout << n; });
                 std::cout << ",";
