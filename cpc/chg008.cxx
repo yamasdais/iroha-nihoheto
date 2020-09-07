@@ -3,6 +3,7 @@
 #include <iostream>
 #include <numeric>
 #include <ranges>
+#include <algorithm>
 #include <type_traits>
 
 #include "challenge.h"
@@ -16,13 +17,12 @@ void buildAry(T& ary, std::index_sequence<I>) {
     auto iter = std::ranges::iota_view(I == 0 ? 1u : 0u, 10u);
     for (auto i : iter) {
         ary[I] = i;
-        auto [start, end] = cpc::toIters(ary);
-        auto sum = std::accumulate(start, end, 0,
+        auto sum = cpc::accum(ary, 0ul,
                 [](auto acc, auto n) { return acc * 10 + n; });
-        auto arm = std::accumulate(start, end, 0,
-                [size](auto acc, auto i) { return acc + std::pow(i, size); });
+        auto arm = cpc::accum(ary, 0ul,
+                [size](auto acc, auto i) { return static_cast<std::iter_value_t<T>>(acc + std::pow(i, size)); });
         if (sum == arm) {
-            std::for_each(start, end, [](auto const n) { std::cout << n; });
+            std::ranges::for_each(ary, [](auto const n) { std::cout << n; });
             std::cout << ",";
         }
     }
@@ -54,8 +54,7 @@ void buildAryVar(T& ary, size_t index = 0) {
             auto arm = std::accumulate(start, end, 0,
                     [size](auto acc, auto i) { return acc + std::pow(i, size); });
             if (sum == arm) {
-                // std::cout << "[" << sum << "," << arm << "]";
-                std::for_each(start, end, [](auto const n) { std::cout << n; });
+                std::ranges::for_each(ary, [](auto const n) { std::cout << n; });
                 std::cout << ",";
             }
         }
@@ -75,7 +74,7 @@ void constexpr makeNums(T& ary) {
 }
 
 int main(int, char**) {
-    auto ary = std::array<unsigned long, 3>();
+    auto ary = std::array<unsigned long, 4>();
     makeNums(ary);
     std::cout << std::endl;
     return 0;

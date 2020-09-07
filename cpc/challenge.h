@@ -1,10 +1,12 @@
 #pragma once
 #include <cmath>
+#include <functional>
 #include <concepts>
 #include <iterator>
 #include <array>
 #include <vector>
 #include <numeric>
+#include <type_traits>
 
 namespace challenge100 {
 
@@ -15,6 +17,29 @@ template <class T, size_t N>
 struct ArraySizeDetector<std::array<T, N>> : public std::true_type {
     constexpr static size_t size = N;
 };
+
+struct accum_fn {
+    template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
+             class BinaryFn, class Init, class Proj = std::identity>
+        requires std::same_as<Init,
+            std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>>
+    constexpr Init operator()(IStart st, IEnd en, Init init, BinaryFn func, Proj proj = {}) const {
+        auto ret = init;
+        for (; st != en; ++st) {
+            ret = std::invoke(func, ret, std::invoke(proj, *st));
+        }
+        return ret;
+    }
+
+    template <std::ranges::forward_range Range, class BinaryFn, class Init,
+             class Proj = std::identity>
+    constexpr Init operator()(Range&& range, Init init, BinaryFn func, Proj proj = {}) const {
+        return (*this)(std::ranges::begin(range), std::ranges::end(range), init, func, proj);
+    }
+
+};
+
+inline constexpr accum_fn accum = accum_fn{};
 
 template <class T>
   requires std::ranges::range<T>
