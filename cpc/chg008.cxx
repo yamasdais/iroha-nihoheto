@@ -8,8 +8,7 @@
 
 #include "challenge.h"
 
-template <size_t width>
-using ValArray = std::array<unsigned long, width>;
+// アームストロング数
 
 template <class T, size_t I>
 void buildAry(T& ary, std::index_sequence<I>) {
