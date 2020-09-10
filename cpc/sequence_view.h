@@ -27,11 +27,6 @@ class sequence_view
         size_t index;
 
         iterator() : func(*((AccFunc*)nullptr)), val(), index() {}
-#if 0
-        iterator(iterator&& other)
-            requires (!std::movable<AccFunc>)
-            : func(other.func), val(std::exchange(other.val, Tval{})), index(std::exchange(other.index, 0u))  {}
-#endif
         constexpr iterator(AccFunc func, Tval val)
             : func(func), val(val), index(0) {}
 
