@@ -7,6 +7,7 @@
 #include <vector>
 #include <numeric>
 #include <type_traits>
+#include <boost/type_index.hpp>
 
 namespace challenge100 {
 
@@ -17,6 +18,13 @@ template <class T, size_t N>
 struct ArraySizeDetector<std::array<T, N>> : public std::true_type {
     constexpr static size_t size = N;
 };
+
+template <class T>
+auto nameT()
+noexcept(noexcept(boost::typeindex::type_id_with_cvr<T>().pretty_name()))
+{
+    return boost::typeindex::type_id_with_cvr<T>().pretty_name();
+}
 
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,

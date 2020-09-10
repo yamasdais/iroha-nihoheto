@@ -1,11 +1,14 @@
 #include <concepts>
 #include <iterator>
 #include <ranges>
+#include <type_traits>
 
 namespace challenge100 {
 
-template <class AccFunc, std::weakly_incrementable Tval,
+template <std::copy_constructible AccFunc, class Tval,
           std::semiregular Tsentinel = std::unreachable_sentinel_t>
+    requires std::convertible_to<std::invoke_result_t<AccFunc, Tval>, Tval>
+    || std::convertible_to<std::invoke_result_t<AccFunc, Tval, size_t>, Tval>
 class sequence_view
     : public std::ranges::view_interface<sequence_view<AccFunc, Tval, Tsentinel>> {
     AccFunc func;
@@ -16,15 +19,20 @@ class sequence_view
     struct sentinel;
 
     struct iterator {
-        using iterator_category = std::input_iterator_tag;
+        using iterator_category = std::forward_iterator_tag;
         using value_type = Tval;
         using difference_type = std::make_signed_t<size_t>;
         AccFunc func;
         Tval val;
         size_t index;
 
-        iterator() = default;
-        constexpr explicit iterator(AccFunc func, Tval val = {})
+        iterator() : func(*((AccFunc*)nullptr)), val(), index() {}
+#if 0
+        iterator(iterator&& other)
+            requires (!std::movable<AccFunc>)
+            : func(other.func), val(std::exchange(other.val, Tval{})), index(std::exchange(other.index, 0u))  {}
+#endif
+        constexpr iterator(AccFunc func, Tval val)
             : func(func), val(val), index(0) {}
 
         constexpr Tval operator*() const
@@ -49,21 +57,23 @@ class sequence_view
             return x.index == y.index;
         }
 
-        friend constexpr difference_type operator-(iterator const& x, iterator const& y) {
+        friend constexpr difference_type operator-(iterator const& x,
+                                                   iterator const& y) {
             return static_cast<difference_type>(x.index) - y.index;
         }
 
        private:
+
         constexpr void _advance() {
-            if constexpr (std::invocable<AccFunc, Tval, size_t>) {
-                val = std::invoke(func, val, index);
+            if constexpr (std::invocable<AccFunc, Tval, size_t const>) {
+                val = std::invoke(func, std::forward<Tval>(val), index);
             } else if constexpr (std::invocable<AccFunc, Tval>) {
-                val = std::invoke(func, val);
+                val = std::invoke(func, std::forward<Tval>(val));
             }
             index++;
         }
 
-        constexpr iterator(size_t b) : index(b) {}
+        constexpr iterator(AccFunc func, size_t b, nullptr_t) : func(func), index(b) {}
         friend sentinel;
         friend sequence_view<AccFunc, Tval, Tsentinel>;
     };
@@ -88,9 +98,7 @@ class sequence_view
     constexpr sequence_view(AccFunc func, Tval init, size_t count)
         : func(func), init(init), bound(count) {}
 
-    constexpr iterator begin() const {
-        return iterator(func, init);
-    }
+    constexpr iterator begin() const { return iterator(func, init); }
 
     constexpr auto end() const {
         if constexpr (std::same_as<Tsentinel, std::unreachable_sentinel_t>) {
@@ -100,13 +108,24 @@ class sequence_view
         }
     }
     constexpr iterator end() const requires std::same_as<Tsentinel, size_t> {
-        return iterator{bound};
+        return { func, bound, nullptr };
+    }
+
+    constexpr auto size() const requires std::same_as<Tsentinel, size_t> {
+        return static_cast<size_t>(bound);
     }
 };
 
+
 // deduction guide for sequence_view
-template <class AccFunc, std::weakly_incrementable Tval>
-sequence_view(AccFunc, Tval, size_t)
-    -> sequence_view<AccFunc, Tval, size_t>;
+template <class AccFunc, class Tval>
+sequence_view(AccFunc, Tval, size_t) -> sequence_view<AccFunc, Tval, size_t>;
 
 }  // namespace challenge100
+
+// enable_borrowed_range
+namespace std::ranges {
+template <class AccFunc, class Tval, class Tsentinel>
+inline constexpr bool
+enable_borrowed_range<challenge100::sequence_view<AccFunc, Tval, Tsentinel>> = true;
+}
