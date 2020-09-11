@@ -1,13 +1,13 @@
 #pragma once
-#include <cmath>
-#include <functional>
-#include <concepts>
-#include <iterator>
 #include <array>
-#include <vector>
+#include <boost/type_index.hpp>
+#include <cmath>
+#include <concepts>
+#include <functional>
+#include <iterator>
 #include <numeric>
 #include <type_traits>
-#include <boost/type_index.hpp>
+#include <vector>
 
 namespace challenge100 {
 
@@ -20,45 +20,53 @@ struct ArraySizeDetector<std::array<T, N>> : public std::true_type {
 };
 
 template <class T>
-auto nameT()
-noexcept(noexcept(boost::typeindex::type_id_with_cvr<T>().pretty_name()))
-{
+auto nameT() noexcept(
+    noexcept(boost::typeindex::type_id_with_cvr<T>().pretty_name())) {
     return boost::typeindex::type_id_with_cvr<T>().pretty_name();
 }
 
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
-             class BinaryFn, class Init, class Proj = std::identity>
-        requires std::convertible_to<std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>, Init>
-    constexpr Init operator()(IStart st, IEnd en, Init&& init, BinaryFn&& func, Proj proj = {}) const {
+              class BinaryFn, class Init, class Proj = std::identity>
+    requires std::convertible_to<
+        std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>,
+        Init> constexpr Init
+    operator()(IStart st, IEnd en, Init&& init, BinaryFn&& func,
+               Proj proj = {}) const {
         Init ret = std::forward<Init>(init);
         for (; st != en; ++st) {
-            ret = std::invoke(std::forward<BinaryFn>(func), ret, std::invoke(proj, *st));
+            ret = std::invoke(std::forward<BinaryFn>(func), ret,
+                              std::invoke(proj, *st));
         }
         return ret;
     }
 
-    template <std::ranges::forward_range Range, class BinaryFn, class Init, class Proj = std::identity>
-    constexpr Init operator()(Range&& range, Init&& init, BinaryFn&& func, Proj proj = {}) const {
-        return (*this)(std::ranges::begin(range), std::ranges::end(range), std::forward<Init>(init),
-               std::forward<BinaryFn>(func), std::move(proj));
+    template <std::ranges::forward_range Range, class BinaryFn, class Init,
+              class Proj = std::identity>
+    constexpr Init operator()(Range&& range, Init&& init, BinaryFn&& func,
+                              Proj proj = {}) const {
+        return (*this)(std::ranges::begin(range), std::ranges::end(range),
+                       std::forward<Init>(init), std::forward<BinaryFn>(func),
+                       std::move(proj));
     }
 };
 
 inline constexpr accum_fn accum = accum_fn{};
 
 template <class T>
-  requires std::ranges::range<T>
-auto constexpr toIters(T& container)
--> std::pair<decltype(std::ranges::begin(container)), decltype(std::ranges::end(container))> {
-    return std::make_pair(std::ranges::begin(container), std::ranges::end(container));
+requires std::ranges::range<T> auto constexpr toIters(T& container)
+    -> std::pair<decltype(std::ranges::begin(container)),
+                 decltype(std::ranges::end(container))> {
+    return std::make_pair(std::ranges::begin(container),
+                          std::ranges::end(container));
 }
 
 template <class T>
-  requires std::ranges::range<T>
-auto constexpr toIters(T const& container)
--> std::pair<decltype(std::ranges::cbegin(container)), decltype(std::ranges::cend(container))> {
-    return std::make_pair(std::ranges::cbegin(container), std::ranges::cend(container));
+requires std::ranges::range<T> auto constexpr toIters(T const& container)
+    -> std::pair<decltype(std::ranges::cbegin(container)),
+                 decltype(std::ranges::cend(container))> {
+    return std::make_pair(std::ranges::cbegin(container),
+                          std::ranges::cend(container));
 }
 
 template <class T>
@@ -82,7 +90,7 @@ constexpr T lcm(T a, T b) noexcept {
 
 template <class Iter, class T = std::iter_value_t<Iter>>
 requires std::forward_iterator<Iter>&& gcd_type<T> constexpr auto lcmr(
-  Iter s, Iter e) noexcept {
+    Iter s, Iter e) noexcept {
     return std::accumulate(s, e, static_cast<T>(1), lcm<T>);
 }
 
@@ -95,8 +103,7 @@ bool is_prime(Num num) {
 
     Num rt = std::sqrt(num);
     for (Num i = 5; i <= rt; i += 6) {
-        if (num % i == 0 || num % (i + 2) == 0)
-            return false;
+        if (num % i == 0 || num % (i + 2) == 0) return false;
     }
     return true;
 }
@@ -129,13 +136,21 @@ std::vector<Num> prime_factors(Num n) {
         }
     }
 
-    if (n > 2)
-        ret.push_back(n);
+    if (n > 2) ret.push_back(n);
 
     return ret;
 }
 
-
+template <std::unsigned_integral Num>
+struct collats_sequence_fn {
+    Num operator()(Num const n) {
+        if (n > 1) {
+            return (n & 1) == 0 ? (n >> 1) : n * 3 + 1;
+        } else {
+            return 0;
+        }
+    }
+};
 
 }  // namespace challenge100
 
