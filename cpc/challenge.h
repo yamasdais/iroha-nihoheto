@@ -25,29 +25,40 @@ auto nameT() noexcept(
     return boost::typeindex::type_id_with_cvr<T>().pretty_name();
 }
 
+template <class T>
+struct true_fn {
+    constexpr bool operator()(T) { return true; }
+};
+
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
-              class BinaryFn, class Init, class Proj = std::identity>
+              class BinaryFn, class Init, class Proj = std::identity,
+              class Pred = true_fn<Init>>
     requires std::convertible_to<
         std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>,
         Init> constexpr Init
     operator()(IStart st, IEnd en, Init&& init, BinaryFn&& func,
-               Proj proj = {}) const {
+               Proj proj = {}, Pred pred = {}) const {
         Init ret = std::forward<Init>(init);
         for (; st != en; ++st) {
             ret = std::invoke(std::forward<BinaryFn>(func), ret,
                               std::invoke(proj, *st));
+            if constexpr (std::invocable<Pred, Init>
+                    && std::same_as<bool, std::invoke_result_t<Pred, Init>>) {
+                if (!std::invoke(pred, ret))
+                    break;
+            }
         }
         return ret;
     }
 
     template <std::ranges::forward_range Range, class BinaryFn, class Init,
-              class Proj = std::identity>
+              class Proj = std::identity, class Pred = true_fn<Init>>
     constexpr Init operator()(Range&& range, Init&& init, BinaryFn&& func,
-                              Proj proj = {}) const {
+                              Proj proj = {}, Pred pred = {}) const {
         return (*this)(std::ranges::begin(range), std::ranges::end(range),
                        std::forward<Init>(init), std::forward<BinaryFn>(func),
-                       std::move(proj));
+                       std::forward<Proj>(proj), std::forward<Pred>(pred));
     }
 };
 
