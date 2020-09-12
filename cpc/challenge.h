@@ -32,33 +32,27 @@ struct true_fn {
 
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
-              class BinaryFn, class Init, class Proj = std::identity,
-              class Pred = true_fn<Init>>
+              class BinaryFn, class Init, class Proj = std::identity>
     requires std::convertible_to<
         std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>,
         Init> constexpr Init
     operator()(IStart st, IEnd en, Init&& init, BinaryFn&& func,
-               Proj proj = {}, Pred pred = {}) const {
+               Proj proj = {}) const {
         Init ret = std::forward<Init>(init);
         for (; st != en; ++st) {
             ret = std::invoke(std::forward<BinaryFn>(func), ret,
                               std::invoke(proj, *st));
-            if constexpr (std::invocable<Pred, Init>
-                    && std::same_as<bool, std::invoke_result_t<Pred, Init>>) {
-                if (!std::invoke(pred, ret))
-                    break;
-            }
         }
         return ret;
     }
 
     template <std::ranges::forward_range Range, class BinaryFn, class Init,
-              class Proj = std::identity, class Pred = true_fn<Init>>
+              class Proj = std::identity>
     constexpr Init operator()(Range&& range, Init&& init, BinaryFn&& func,
-                              Proj proj = {}, Pred pred = {}) const {
+                              Proj proj = {}) const {
         return (*this)(std::ranges::begin(range), std::ranges::end(range),
                        std::forward<Init>(init), std::forward<BinaryFn>(func),
-                       std::forward<Proj>(proj), std::forward<Pred>(pred));
+                       std::forward<Proj>(proj));
     }
 };
 
