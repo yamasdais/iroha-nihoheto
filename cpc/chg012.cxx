@@ -36,8 +36,7 @@ auto longest_collats0(Range&& range) {
         auto len = cpc::accum(seq, size_t{}, [](auto&& acc, auto const n) {
                 if constexpr (isVerbose)
                     std::cout << n << ",";
-                acc++;
-                return acc;
+                return acc + 1;
                 });
         if (last < first_term) {
             if constexpr (isVerbose)
