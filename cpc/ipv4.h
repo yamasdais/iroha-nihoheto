@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <array>
+#include <compare>
 
 namespace challenge100 {
 
@@ -10,21 +11,21 @@ struct ipv4 {
 public:
     using nodeT = uint8_t;
 private:
-    std::array<nodeT, 4> data;
+    union {
+        std::array<nodeT, 4> ary;
+        uint32_t val;
+    } data;
 
 public:
     constexpr ipv4() : ipv4(0, 0, 0, 0) {}
     constexpr ipv4(nodeT a, nodeT b, nodeT c, nodeT d)
-        : data{{a, b, c, d}} {}
+        : data{ .ary={{d, c, b, a}}} {}
     constexpr explicit ipv4(uint32_t a)
-        : ipv4(static_cast<nodeT>((a >> 24) & 0xff),
-               static_cast<nodeT>((a >> 16) & 0xff),
-               static_cast<nodeT>((a >> 8) & 0xff),
-               static_cast<nodeT>(a & 0xff)) {}
+        : data{ .val = a } {}
     ipv4(ipv4 const& other) noexcept
-        : data(other.data) {}
+        : data{ .ary=other.data.ary } {}
     ipv4& operator=(ipv4 const& other) noexcept {
-        data = other.data;
+        data.ary = other.data.ary;
         return *this;
     }
 
@@ -34,11 +35,16 @@ public:
         return sstr.str();
     }
 
+    constexpr nodeT to_ulong() const noexcept {
+        return data.val;
+    }
+
     friend std::ostream& operator<<(std::ostream& os, ipv4 const& a) {
-        os << static_cast<int>(a.data[0]) << '.'
-           << static_cast<int>(a.data[1]) << '.'
-           << static_cast<int>(a.data[2]) << '.'
-           << static_cast<int>(a.data[3]);
+        os << static_cast<int>(a.data.ary[3]) << '.'
+           << static_cast<int>(a.data.ary[2]) << '.'
+           << static_cast<int>(a.data.ary[1]) << '.'
+           << static_cast<int>(a.data.ary[0]);
+
         return os;
     }
 
@@ -51,6 +57,23 @@ public:
         else
             is.setstate(std::ios_base::failbit);
         return is;
+    }
+
+    ipv4& operator++() {
+        data.val++;
+        return *this;
+    }
+    ipv4 operator++(int) {
+        auto ret = *this;
+        ++(*this);
+        return ret;
+    }
+
+    auto operator<=>(ipv4 const& other) const {
+        return data.val <=> other.data.val;
+    }
+    auto operator==(ipv4 const& other) const {
+        return data.val == other.data.val;
     }
 };
 

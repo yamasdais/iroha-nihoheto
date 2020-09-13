@@ -40,7 +40,7 @@ struct accum_fn {
                Proj proj = {}) const {
         Init ret = std::forward<Init>(init);
         for (; st != en; ++st) {
-            ret = std::invoke(std::forward<BinaryFn>(func), ret,
+            ret = std::invoke(std::forward<BinaryFn>(func), std::move(ret),
                               std::invoke(proj, *st));
         }
         return ret;
