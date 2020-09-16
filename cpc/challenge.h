@@ -25,11 +25,6 @@ auto nameT() noexcept(
     return boost::typeindex::type_id_with_cvr<T>().pretty_name();
 }
 
-template <class T>
-struct true_fn {
-    constexpr bool operator()(T) { return true; }
-};
-
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
               class BinaryFn, class Init, class Proj = std::identity>
