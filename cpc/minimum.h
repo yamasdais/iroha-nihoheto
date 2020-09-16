@@ -26,10 +26,6 @@ struct minimum_fn {
         return (*this)(lhs, (*this)(tail...));
     }
 #endif
-};
-inline constexpr minimum_fn minimum = {};
-
-struct minimumc_fn {
     template <class F, class T, class U>
     requires std::invocable<F, T, U> constexpr std::common_type_t<T, U>
     operator()(F func, T&& lhs, U&& rhs) const {
@@ -42,7 +38,7 @@ struct minimumc_fn {
     template <class F, class T, class... U>
     requires std::invocable<
         F, T,
-        std::invoke_result_t<minimumc_fn, F, U...>> constexpr auto
+        std::invoke_result_t<minimum_fn, F, U...>> constexpr auto
     operator()(F func, T&& lhs, U&&... tail) const {
         return std::invoke((*this), func, std::forward<T>(lhs),
                            std::invoke((*this), func, std::forward<U>(tail)...));
@@ -50,6 +46,6 @@ struct minimumc_fn {
 #endif
 };
 
-inline constexpr minimumc_fn minimumc = {};
+inline constexpr minimum_fn minimum = {};
 
 }  // namespace challenge100
