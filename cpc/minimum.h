@@ -5,6 +5,11 @@
 
 #include "challenge.h"
 
+// 任意個数の最小値取得関数
+// 本の説明だと述語関数を受け取るバージョンは別の関数名とせざるを得ないとあったが、
+// concept を使えば同じ関数名として実装できた。関数オブジェクトだけども。
+// ということは C++17 でも SFINAE を駆使すれば同じ関数で実装できるんではなかろうか？
+// （やりたくはないけど）
 namespace challenge100 {
 // minimum
 
@@ -21,13 +26,15 @@ struct minimum_fn {
 
 #if 1
     template <class T, class... U>
+        requires std::invocable<minimum_fn, T, std::invoke_result_t<minimum_fn, U...>>
     constexpr auto operator()(T&& lhs, U&&... tail) const
         -> std::common_type_t<T, decltype((*this)(tail...))> {
         return (*this)(lhs, (*this)(tail...));
     }
 #endif
     template <class F, class T, class U>
-    requires std::invocable<F, T, U> constexpr std::common_type_t<T, U>
+    requires std::convertible_to<std::invoke_result_t<F, T, U>, bool>
+    constexpr std::common_type_t<T, U>
     operator()(F func, T&& lhs, U&& rhs) const {
         return std::invoke(func, std::forward<T>(lhs), std::forward<U>(rhs))
                    ? lhs
