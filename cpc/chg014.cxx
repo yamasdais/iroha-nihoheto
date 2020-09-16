@@ -55,7 +55,7 @@ bool validate_isbn13(std::string_view isbn) {
             auto plus = (x ? 3 : 1) * n; 
             if (isVerbose)
                 std::cout << n << ": " << acc << ", " << x << "(+" << plus << ")" << std::endl;
-            x ^= true;
+            x = !x;
             len++;
             return acc + plus;
             });
