@@ -28,6 +28,7 @@ struct minimum_fn {
     template <class T, class... U>
         requires std::invocable<minimum_fn, T, std::invoke_result_t<minimum_fn, U...>>
     constexpr auto operator()(T&& lhs, U&&... tail) const
+    noexcept(noexcept((*this)(lhs, (*this)(tail...))))
         -> std::common_type_t<T, decltype((*this)(tail...))> {
         return (*this)(lhs, (*this)(tail...));
     }
@@ -35,7 +36,9 @@ struct minimum_fn {
     template <class F, class T, class U>
     requires std::convertible_to<std::invoke_result_t<F, T, U>, bool>
     constexpr std::common_type_t<T, U>
-    operator()(F func, T&& lhs, U&& rhs) const {
+    operator()(F func, T&& lhs, U&& rhs) const
+    noexcept(noexcept(std::invoke(func, std::forward<T>(lhs), std::forward<U>(rhs))))
+    {
         return std::invoke(func, std::forward<T>(lhs), std::forward<U>(rhs))
                    ? lhs
                    : rhs;
@@ -46,7 +49,9 @@ struct minimum_fn {
     requires std::invocable<
         F, T,
         std::invoke_result_t<minimum_fn, F, U...>> constexpr auto
-    operator()(F func, T&& lhs, U&&... tail) const {
+    operator()(F func, T&& lhs, U&&... tail) const
+    noexcept(noexcept(std::invoke((*this), func, std::forward<T>(lhs),
+                    std::invoke((*this), func, std::forward<U>(tail)...)))) {
         return std::invoke((*this), func, std::forward<T>(lhs),
                            std::invoke((*this), func, std::forward<U>(tail)...));
     }
