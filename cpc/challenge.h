@@ -159,7 +159,8 @@ void print_range(Range const& range) {
     std::ranges::copy(range, std::ostream_iterator<std::ranges::range_value_t<Range>>(std::cout, " "));
 }
 
-bool are_equal(double const d1, double const d2, double const epsilon = 0.001) {
+bool are_equal(double const d1, double const d2, double const epsilon = 0.001)
+{
     return std::fabs(d1 - d2) < epsilon;
 }
 
