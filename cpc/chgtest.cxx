@@ -7,6 +7,7 @@
 
 #include "challenge.h"
 #include "sequence_view.h"
+#include "str_util.h"
 
 template <class T, class U>
 concept asig = requires(T lhs, U&& rhs) {
@@ -130,9 +131,23 @@ void fibonacci() {
     std::cout << std::endl;
 }
 
+void test2() {
+    try {
+        for (auto&& token : cpc::split(std::string{"Foo bar baz"}, ' ')) {
+            std::cout << "In loop" << "\n";
+            //std::cout << "typeof token: " << cpc::nameT<decltype(token)>() << "\n";
+            std::cout << token << ",\n";
+        }
+        std::cout << std::endl;
+    } catch (std::exception& e) {
+        std::cout << "caught exception: " << e.what() << std::endl;
+    }
+}
+
 int main(int, char**) {
     test0();
     test1();
+    test2();
     fibonacci();
     return 0;
 }

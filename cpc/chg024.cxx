@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "challenge.h"
+#include "str_util.h"
 
 unsigned char hexchar_to_byte(unsigned char const ch)
     noexcept(false)
@@ -26,14 +27,27 @@ std::vector<unsigned char> hexstr_to_bytes(std::string_view str) {
     return ret;
 }
 
-int main(int, char**) {
-    //auto str0 = hexstr_to_bytes("BAD");
-    auto str0 = hexstr_to_bytes("BAADF00D42");
+void solve0(std::string_view src) {
+    auto str0 = hexstr_to_bytes(src);
     std::cout << std::hex;
     for (auto c : str0) {
         std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(c) << ", ";
     }
     std::cout << std::endl;
+}
+
+void solve1(char const* src) {
+    for (auto& cell : cpc::split({src}, ' ')) {
+        //std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(c) << ", ";
+        //std::cout << cell << std::endl;
+        solve0(cell);
+    }
+}
+
+int main(int, char**) {
+    //auto str0 = hexstr_to_bytes("BAD");
+    solve0("BAADF00D42");
+    solve1("BA AD F0 d4");
     return 0;
 }
 

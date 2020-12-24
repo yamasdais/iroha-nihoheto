@@ -3,6 +3,9 @@ project(CPPChallenge CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #set(CMAKE_CXX_FLAGS "-O2")
+set(coroutine_required chgtest;chg024)
+
+find_package(Threads REQUIRED)
 
 macro(make_execs)
     file(GLOB srcs RELATIVE ${CMAKE_SOURCE_DIR} chg*.cxx)
@@ -37,6 +40,11 @@ if(Boost_FOUND)
 endif()
 
 make_execs()
+foreach(coro_targ IN LISTS coroutine_required)
+    target_compile_options(${coro_targ} PRIVATE "$<$<CXX_COMPILER_ID:GNU>:-fcoroutines>")
+    target_compile_options(${coro_targ} PRIVATE "$<$<CXX_COMPILER_ID:MSVC>:/await>")
+endforeach()
+
 #add_executable(chg001 chg001.cxx)
 #if(CMAKE_COMPILER_IS_GNUCXX)
 #    target_link_libraries(async0 pthread)
