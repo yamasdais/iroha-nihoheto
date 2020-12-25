@@ -43,16 +43,17 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg012.cxx](chg012.cxx)|最長コラッツ数列|[sequence_view](sequence_view.h) や accum() を組み合わせて使った
 |[chg013.cxx](chg013.cxx)|πの計算|モンテカルロ法を使ってるので、乱数の使い方のサンプルになってる
 |[chg014.cxx](chg014.cxx)|ISBN の検証|string_view と ranges, accum() をバシバシ使った
-|[chg015.cxx](chg015.cxx)|IPV4 データ型
-|[chg016.cxx](chg016.cxx)|
-|[chg017.cxx](chg017.cxx)|
-|[chg018.cxx](chg018.cxx)|
-|[chg019.cxx](chg019.cxx)|
-|[chg020.cxx](chg020.cxx)|
-|[chg021.cxx](chg021.cxx)|
-|[chg022.cxx](chg022.cxx)|
-|[chg023.cxx](chg023.cxx)|
-|[chg024.cxx](chg024.cxx)|
+|__言語機能__
+|[chg015.cxx](chg015.cxx)|IPv4 データ型
+|[chg016.cxx](chg016.cxx)|IPv4 アドレス列挙
+|[chg017.cxx](chg017.cxx)|基本演算できる配列 array2d
+|[chg018.cxx](chg018.cxx)|可変引数 min() 関数
+|[chg019.cxx](chg019.cxx)|可変引数 push_back
+|[chg020.cxx](chg020.cxx)|コンテナの any, all, none
+|[chg021.cxx](chg021.cxx)|ファイルハンドルラッパー|RAII に unique_ptr を使うサンプル
+|[chg022.cxx](chg022.cxx)|温度の単位変換|[temperature.h](temperature.h) で実装。宇宙船演算子、ユーザ定義リテラルの使い方サンプル
+|[chg023.cxx](chg023.cxx)|バイナリから文字列への変換|ranges 関数実装のサンプル、iomanip で hex 表示
+|[chg024.cxx](chg024.cxx)|coroutine を漸く導入。[coro_util.h](coro_util.h) で generator を定義した。no_unique_address を使った例外ハンドラの切り替えなども
 |[chg025.cxx](chg025.cxx)|
 |[chg026.cxx](chg026.cxx)|
 |[chg027.cxx](chg027.cxx)|
