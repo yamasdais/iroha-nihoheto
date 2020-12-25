@@ -44,16 +44,16 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg013.cxx](src/chg013.cxx)|πの計算|モンテカルロ法を使ってるので、乱数の使い方のサンプルになってる
 |[chg014.cxx](src/chg014.cxx)|ISBN の検証|string_view と ranges, accum() をバシバシ使った
 |__言語機能__
-|[chg015.cxx](src/chg015.cxx)|IPv4 データ型
-|[chg016.cxx](src/chg016.cxx)|IPv4 アドレス列挙
-|[chg017.cxx](src/chg017.cxx)|基本演算できる配列 array2d
-|[chg018.cxx](src/chg018.cxx)|可変引数 min() 関数
-|[chg019.cxx](src/chg019.cxx)|可変引数 push_back
-|[chg020.cxx](src/chg020.cxx)|コンテナの any, all, none
+|[chg015.cxx](src/chg015.cxx)|IPv4 データ型|[ipv4.h](include/ipv4.h) にクラスを定義してある。union を使ったメンバ定義。宇宙船演算子のシンプルな利用
+|[chg016.cxx](src/chg016.cxx)|IPv4 アドレス列挙|同上
+|[chg017.cxx](src/chg017.cxx)|基本演算できる配列| [array2d](include/array2d.h) 定義
+|[chg018.cxx](src/chg018.cxx)|可変引数 min() 関数|大小比較用のユーザ定義関数を渡せるバージョンを concept を使ってオーバーロードできたのでそのサンプル
+|[chg019.cxx](src/chg019.cxx)|可変引数 push_back|concept を使って push_back を持っているかチェックしてみた
+|[chg020.cxx](src/chg020.cxx)|コンテナの any, all, none|fold expression のサンプル
 |[chg021.cxx](src/chg021.cxx)|ファイルハンドルラッパー|RAII に unique_ptr を使うサンプル
 |[chg022.cxx](src/chg022.cxx)|温度の単位変換|[temperature.h](include/temperature.h) で実装。宇宙船演算子、ユーザ定義リテラルの使い方サンプル
 |[chg023.cxx](src/chg023.cxx)|バイナリから文字列への変換|ranges 関数実装のサンプル、iomanip で hex 表示
-|[chg024.cxx](src/chg024.cxx)|coroutine を漸く導入。[coro_util.h](include/coro_util.h) で generator を定義した。no_unique_address を使った例外ハンドラの切り替えなども
+|[chg024.cxx](src/chg024.cxx)|文字列からバイナリへの変換|coroutine を漸く導入。[coro_util.h](include/coro_util.h) で generator を定義した。no_unique_address を使った例外ハンドラの切り替えなども
 |[chg025.cxx](src/chg025.cxx)|
 |[chg026.cxx](src/chg026.cxx)|
 |[chg027.cxx](src/chg027.cxx)|
