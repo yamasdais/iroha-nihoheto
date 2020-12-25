@@ -28,7 +28,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 
 | File | Title | Note |
 :---|:---|:---
-|<td colspan="3">数学</td>
+<td colspan="3">数学</td>
 |[chg001.cxx](chg001.cxx)|3 または 5 で割り切れる正の整数の和|
 |[chg002.cxx](chg002.cxx)|最大公約数|gcd() は [challenge.h](challenge.h) に実装してる
 |[chg003.cxx](chg003.cxx)|最小公倍数|lcmr() は [challenge.h](challenge.h) に実装してる
