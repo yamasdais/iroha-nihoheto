@@ -28,6 +28,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 
 | File | Title | Note |
 :---|:---|:---
+|<td colspan="3">数学</td>
 |[chg001.cxx](chg001.cxx)|3 または 5 で割り切れる正の整数の和|
 |[chg002.cxx](chg002.cxx)|最大公約数|gcd() は [challenge.h](challenge.h) に実装してる
 |[chg003.cxx](chg003.cxx)|最小公倍数|lcmr() は [challenge.h](challenge.h) に実装してる
@@ -37,12 +38,12 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg007.cxx](chg007.cxx)|友愛数|〃
 |[chg008.cxx](chg008.cxx)|アームストロング数|ranges 版 accumulate() が無かったので accum() を作ったやつ。<br> std::array のインスタンスからサイズを求める ArraySizeDetector も作った。[challenge.h](challenge.h)
 |[chg009.cxx](chg009.cxx)|素因数分解|prime_factors() は [challenge.h](challenge.h) に実装してる
-|[chg010.cxx](chg010.cxx)|グレイコード
-|[chg011.cxx](chg011.cxx)|ローマ数字変換
-|[chg012.cxx](chg012.cxx)|最長コラッツ数列
-|[chg013.cxx](chg013.cxx)|πの計算
-|[chg014.cxx](chg014.cxx)|ISBN の検証
-|[chg015.cxx](chg015.cxx)|
+|[chg010.cxx](chg010.cxx)|グレイコード|[sequence_view](sequence_view.h) を作った
+|[chg011.cxx](chg011.cxx)|ローマ数字変換|iota_view を使った
+|[chg012.cxx](chg012.cxx)|最長コラッツ数列|[sequence_view](sequence_view.h) や accum() を組み合わせて使った
+|[chg013.cxx](chg013.cxx)|πの計算|モンテカルロ法を使ってるので、乱数の使い方のサンプルになってる
+|[chg014.cxx](chg014.cxx)|ISBN の検証|string_view と ranges, accum() をバシバシ使った
+|[chg015.cxx](chg015.cxx)|IPV4 データ型
 |[chg016.cxx](chg016.cxx)|
 |[chg017.cxx](chg017.cxx)|
 |[chg018.cxx](chg018.cxx)|
