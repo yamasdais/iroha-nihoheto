@@ -52,9 +52,10 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg020.cxx](src/chg020.cxx)|コンテナの any, all, none|fold expression のサンプル
 |[chg021.cxx](src/chg021.cxx)|ファイルハンドルラッパー|RAII に unique_ptr を使うサンプル
 |[chg022.cxx](src/chg022.cxx)|温度の単位変換|[temperature.h](include/temperature.h) で実装。宇宙船演算子、ユーザ定義リテラルの使い方サンプル
+|__文字列と正規表現__
 |[chg023.cxx](src/chg023.cxx)|バイナリから文字列への変換|ranges 関数実装のサンプル、iomanip で hex 表示
 |[chg024.cxx](src/chg024.cxx)|文字列からバイナリへの変換|coroutine を漸く導入。[coro_util.h](include/coro_util.h) で generator を定義した。no_unique_address を使った例外ハンドラの切り替えなども
-|[chg025.cxx](src/chg025.cxx)|
+|[chg025.cxx](src/chg025.cxx)|英文タイトル Capitalize|
 |[chg026.cxx](src/chg026.cxx)|
 |[chg027.cxx](src/chg027.cxx)|
 |[chg028.cxx](src/chg028.cxx)|
