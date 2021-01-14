@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #set(CMAKE_CXX_FLAGS "-O2")
-set(coroutine_required chgtest;chg024)
+set(coroutine_required chgtest;chg024;chg025)
 
 find_package(Threads REQUIRED)
 
