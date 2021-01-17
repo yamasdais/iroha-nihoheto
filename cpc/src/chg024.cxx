@@ -37,7 +37,8 @@ void solve0(std::string_view src) {
 }
 
 void solve1(char const* src) {
-    for (auto& cell : cpc::split({src}, ' ')) {
+    using namespace std::string_literals;
+    for (auto& cell : cpc::split({src}, " "s)) {
         //std::cout << std::setw(2) << std::setfill('0') << static_cast<int>(c) << ", ";
         //std::cout << cell << std::endl;
         solve0(cell);

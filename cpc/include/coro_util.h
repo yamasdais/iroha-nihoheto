@@ -132,4 +132,17 @@ struct generator {
     coro_handle coro_ = nullptr;
 };
 
+/*
+ * generator から container を生成する。
+ * generator 以外の可変引数を受け付ける様にする需要は有るだろうか？
+ * そういう場面になったら簡単そうではあるので実装する方針。
+ */
+template <std::ranges::range Cont, bool EnableRethrow = false, class Elem = std::ranges::range_value_t<Cont>>
+requires std::same_as<std::ranges::range_value_t<Cont>, Elem>
+    && std::constructible_from<Cont, std::ranges::iterator_t<generator<Elem, EnableRethrow>>, std::ranges::sentinel_t<generator<Elem, EnableRethrow>>>
+Cont make_from_generator(generator<Elem, EnableRethrow>& gen)
+{
+    return {std::ranges::begin(gen), std::ranges::end(gen)};
+}
+
 } // closing namespace challenge100

@@ -132,8 +132,9 @@ void fibonacci() {
 }
 
 void test2() {
+    using namespace std::string_literals;
     try {
-        for (auto&& token : cpc::split(std::string{"Foo bar baz"}, ' ')) {
+        for (auto&& token : cpc::split(std::string{"Foo bar baz"}, " "s)) {
             std::cout << "In loop" << "\n";
             //std::cout << "typeof token: " << cpc::nameT<decltype(token)>() << "\n";
             std::cout << token << ",\n";
