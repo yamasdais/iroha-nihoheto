@@ -58,7 +58,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg025.cxx](src/chg025.cxx)|英文タイトル Capitalize|sstream を使わず、coroutine を使った generator で文字を返して string のコンストラクタにイテレータを渡すようにして簡素化した
 |[chg026.cxx](src/chg026.cxx)|区切り文字列で文字列を連結する|これも generator で文字を返すようにアレンジ
 |[chg027.cxx](src/chg027.cxx)|区切り文字列で文字列を分割する|split() を chg024 で作っていたので、文字集合を受け付けるように仕様変更して流用。
-|[chg028.cxx](src/chg028.cxx)|最長回文文字列|線形時間で済むアルゴリズムが有るらしいので、そちらを参考にしてやり直す
+|[chg028.cxx](src/chg028.cxx)|最長回文文字列|線形時間で済むアルゴリズムが有るらしいので、そちらを参考にしてやり直す。あとネストしたループを ranges 風に出来ないか検討する予定
 |[chg029.cxx](src/chg029.cxx)|
 |[chg030.cxx](src/chg030.cxx)|
 |[chg031.cxx](src/chg031.cxx)|
