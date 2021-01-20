@@ -164,6 +164,16 @@ bool are_equal(double const d1, double const d2, double const epsilon = 0.001)
     return std::fabs(d1 - d2) < epsilon;
 }
 
+/*
+ * 条件が成立したら有効な値を構築する。
+ * 条件が成立した時だけ値を評価するように、受け取った関数を遅延実行する仕様
+ * 即値で構築すれば良いような場面があれば、遅延評価しないオーバーロードを作ったらいいかも
+ */
+template <class F, class T = std::invoke_result_t<F>>
+std::optional<T> make_optional_if(bool cond, F&& func) {
+    return cond ? std::optional<T>{ std::invoke(std::forward<F>(func)) } : std::optional<T>{};
+}
+
 }  // namespace challenge100
 
 namespace cpc = challenge100;

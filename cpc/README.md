@@ -60,7 +60,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg027.cxx](src/chg027.cxx)|区切り文字列で文字列を分割する|split() を chg024 で作っていたので、文字集合を受け付けるように仕様変更して流用。
 |[chg028.cxx](src/chg028.cxx)|最長回文文字列|線形時間で済むアルゴリズムが有るらしいので、そちらを参考にしてやり直す。あとネストしたループとかゴチャっとしてるので、もうちょっと綺麗にしたい。
 |[chg029.cxx](src/chg029.cxx)|ナンバープレートの検証|LLL-LL DDD or LLL-LL DDDD の検証。regex を使う
-|[chg030.cxx](src/chg030.cxx)|
+|[chg030.cxx](src/chg030.cxx)|url パーツ抽出|optional, regex を使う。[challenge.h](include/challenge.h) に make_optional_if() を実装した。
 |[chg031.cxx](src/chg031.cxx)|
 |[chg032.cxx](src/chg032.cxx)|
 |[chg033.cxx](src/chg033.cxx)|
