@@ -38,15 +38,8 @@ std::vector<proc_info> read_procinfo() {
     if (!proc) {
         std::cerr << "openproc failed." << std::endl;
     } else {
-        auto iterate = [proc_p=proc.get()]() noexcept {
-            return std::unique_ptr<proc_t, void(&)(proc_t*)>{ readproc(proc_p, nullptr), freeproc };
-        };
-        while (true) {
-            auto proc_info = iterate();
-            if (!proc_info)
-                break;
+        while (std::unique_ptr<proc_t, void(&)(proc_t*)> proc_info{ readproc(proc.get(), nullptr), freeproc})
             ret.emplace_back(proc_info->tid, proc_info->cmd, proc_info->euser, proc_info->vm_size);
-        }
     }
     return ret;
 }
