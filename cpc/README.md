@@ -64,7 +64,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg031.cxx](src/chg031.cxx)|日付文字列の変換|regex_replace を使った。C++20 っぽくは無い。
 |__ストリームとファイルシステム__
 |[chg032.cxx](src/chg032.cxx)|パスカルの三角形|二重ループをなんとかしたい。 
-|[chg033.cxx](src/chg033.cxx)|
+|[chg033.cxx](src/chg033.cxx)|プロセスリストを表示する|libprocps を使った。std::ranges::sort の projection を使った。
 |[chg034.cxx](src/chg034.cxx)|
 |[chg035.cxx](src/chg035.cxx)|
 |[chg036.cxx](src/chg036.cxx)|
