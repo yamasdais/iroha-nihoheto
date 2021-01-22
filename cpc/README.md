@@ -65,7 +65,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |__ストリームとファイルシステム__
 |[chg032.cxx](src/chg032.cxx)|パスカルの三角形|二重ループをなんとかしたい。 
 |[chg033.cxx](src/chg033.cxx)|プロセスリストを表示する|libprocps を使った。std::ranges::sort の projection を使った。
-|[chg034.cxx](src/chg034.cxx)|
+|[chg034.cxx](src/chg034.cxx)|textファイルの空行を除去する|filesystem を使う予定だったが、temp ファイル名を作れないので、boost::filesystem を使うようにした。C++20 っぽくはない
 |[chg035.cxx](src/chg035.cxx)|
 |[chg036.cxx](src/chg036.cxx)|
 |[chg037.cxx](src/chg037.cxx)|
