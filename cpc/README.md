@@ -67,7 +67,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg033.cxx](src/chg033.cxx)|プロセスリストを表示する|libprocps を使った。std::ranges::sort の projection を使った。
 |[chg034.cxx](src/chg034.cxx)|textファイルの空行を除去する|filesystem を使う予定だったが、temp ファイル名を作れないので、boost::filesystem を使うようにした。C++20 っぽくはない
 |[chg035.cxx](src/chg035.cxx)|ディレクトリサイズを計算する|自前の accum() を使えるようにしてみたい。
-|[chg036.cxx](src/chg036.cxx)|
+|[chg036.cxx](src/chg036.cxx)|指定タイムスタンプより古いファイル|課題は削除だが、削除されると困るので表示のみ。chrono_literals を使った。C++20 らしいネタが思いつかなかった。
 |[chg037.cxx](src/chg037.cxx)|
 |[chg038.cxx](src/chg038.cxx)|
 |[chg039.cxx](src/chg039.cxx)|
