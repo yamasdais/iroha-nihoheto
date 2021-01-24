@@ -10,6 +10,8 @@
 #include <type_traits>
 #include <vector>
 #include <iostream>
+#include <chrono>
+#include <tuple>
 
 namespace challenge100 {
 
@@ -109,6 +111,30 @@ bool is_prime(Num num) {
     }
     return true;
 }
+
+/*
+ * 関数の実行時間を計測する
+ * 返り値なし関数なら実行時間が返る。
+ * 返り値あり関数なら、実行時間とその関数の返り値の tuple が返る。
+ */
+template <class Time = std::chrono::microseconds,
+          class Clock = std::chrono::high_resolution_clock>
+struct perf_timer {
+    template <class F, class... Args>
+        requires std::invocable<F, Args...>
+    static auto duration(F&& func, Args&& ...args) {
+        auto start = Clock::now();
+        if constexpr (std::is_invocable_r_v<void, F, Args...>) {
+            std::invoke(std::forward<F>(func), std::forward<Args>(args)...);
+            return std::chrono::duration_cast<Time>(Clock::now() - start);
+        } else {
+            return std::tuple<std::invoke_result_t<F, Args...>, Time>{
+                std::invoke(std::forward<F>(func), std::forward<Args>(args)...),
+                std::chrono::duration_cast<Time>(Clock::now() - start),
+            };
+        }
+    }
+};
 
 template <std::integral Num>
 Num sum_proper_divisors(Num const number) {
