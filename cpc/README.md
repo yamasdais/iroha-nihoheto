@@ -70,7 +70,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg036.cxx](src/chg036.cxx)|指定タイムスタンプより古いファイル|課題は削除だが、削除されると困るので表示のみ。chrono_literals を使った。C++20 らしいネタが思いつかなかった。
 |[chg037.cxx](src/chg037.cxx)|正規表現が使えるls|作った generator が ranges::filter_view と組み合わせて動く事が確認できた。
 |[chg038.cxx](src/chg038.cxx)|一時ログファイル|boost uuid を使う。C++20 らしいネタを思いつかない
-|[chg039.cxx](src/chg039.cxx)|
+|[chg039.cxx](src/chg039.cxx)|実行時間を測定する関数|concept があると便利だなという例
 |[chg040.cxx](src/chg040.cxx)|
 |[chg041.cxx](src/chg041.cxx)|
 |[chg042.cxx](src/chg042.cxx)|
