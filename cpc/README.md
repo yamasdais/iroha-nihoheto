@@ -72,12 +72,12 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg038.cxx](src/chg038.cxx)|一時ログファイル|boost uuid を使う。C++20 らしいネタを思いつかない
 |__日付と時刻__
 |[chg039.cxx](src/chg039.cxx)|実行時間を測定する関数|concept があると便利だなという例
-|[chg040.cxx](src/chg040.cxx)|日付の差分
-|[chg041.cxx](src/chg041.cxx)|
-|[chg042.cxx](src/chg042.cxx)|
-|[chg043.cxx](src/chg043.cxx)|
-|[chg044.cxx](src/chg044.cxx)|
-|[chg045.cxx](src/chg045.cxx)|
+|[chg040.cxx](src/chg040.cxx)|日付の差分|g++ も clang も chrono ライブラリが一部未実装。date.h をダウンロードして使う？
+|[chg041.cxx](src/chg041.cxx)|曜日|〃
+|[chg042.cxx](src/chg042.cxx)|年間の日と週|〃
+|[chg043.cxx](src/chg043.cxx)|複数のタイムゾーンの打ち合わせ時刻|〃
+|[chg044.cxx](src/chg044.cxx)|月間カレンダー|〃
+|[chg045.cxx](src/chg045.cxx)|priority queue
 |[chg046.cxx](src/chg046.cxx)|
 |[chg047.cxx](src/chg047.cxx)|
 |[chg048.cxx](src/chg048.cxx)|
