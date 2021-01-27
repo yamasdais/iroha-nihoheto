@@ -15,6 +15,12 @@
 
 namespace challenge100 {
 
+template <class T>
+class TypeTracer;
+
+template <class T>
+    void trace_type(T);
+
 template <class>
 struct ArraySizeDetector : public std::false_type {};
 
