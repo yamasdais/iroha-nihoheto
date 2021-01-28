@@ -31,7 +31,7 @@ namespace detail {
         requires (std::invocable<Proj, Args> && ...)
         && std::invocable<Fn, std::invoke_result_t<Proj, Args>...>
     struct make_projection_impl {
-        constexpr make_projection_impl(Fn&& func, Proj&& proj)
+        constexpr make_projection_impl(Fn&& func, Proj&& proj) noexcept
             : func{std::forward<Fn>(func)}, proj{std::forward<Proj>(proj)}
         {}
 
@@ -48,7 +48,7 @@ namespace detail {
 }
 
 template <class... Args>
-constexpr auto make_projection = [](auto&& fn, auto&& proj) {
+constexpr auto make_projection = [](auto&& fn, auto&& proj) noexcept {
     return detail::make_projection_impl<
         std::remove_reference_t<decltype(fn)>, std::remove_reference_t<decltype(proj)>,
         Args...>{
@@ -58,7 +58,6 @@ constexpr auto make_projection = [](auto&& fn, auto&& proj) {
 };
 
 // std::priority_queue を C++20 風にしたらこんな感じかなという実装
-// 改善のアイデア
 template <class T,
          std::ranges::random_access_range Cont = std::vector<T>,
          class Compare = std::less<T>,

@@ -77,7 +77,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg042.cxx](src/chg042.cxx)|年間の日と週|〃
 |[chg043.cxx](src/chg043.cxx)|複数のタイムゾーンの打ち合わせ時刻|〃
 |[chg044.cxx](src/chg044.cxx)|月間カレンダー|〃
-|[chg045.cxx](src/chg045.cxx)|priority queue|std ライブラリにも有るんだが、prior_que として実装。C++20 らしくしてみたが、空要素で ctor 呼ぶ時の推論ガイドをなんとかしたい。
+|[chg045.cxx](src/chg045.cxx)|priority queue|std ライブラリにも有るんだが、prior_que として実装。C++20 らしくしてみた。
 |[chg046.cxx](src/chg046.cxx)|
 |[chg047.cxx](src/chg047.cxx)|
 |[chg048.cxx](src/chg048.cxx)|
