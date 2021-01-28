@@ -28,12 +28,14 @@ constexpr auto projection_helper(Fn&& fn, Proj&& proj) noexcept {
 // 関数 template で一部型推論ガイド的な技法
 namespace detail {
     template <class Fn, class Proj, class... Args>
+        requires (std::invocable<Proj, Args> && ...)
+        && std::invocable<Fn, std::invoke_result_t<Proj, Args>...>
     struct make_projection_impl {
-        make_projection_impl(Fn&& func, Proj&& proj)
+        constexpr make_projection_impl(Fn&& func, Proj&& proj)
             : func{std::forward<Fn>(func)}, proj{std::forward<Proj>(proj)}
         {}
 
-        auto operator()(Args... arg)
+        constexpr auto operator()(Args... arg)
         const noexcept(noexcept(std::is_nothrow_invocable_v<Fn, std::invoke_result_t<Proj, Args>...>))
         {
             return std::invoke(func, std::invoke(proj, std::forward<Args>(arg))...);
@@ -46,7 +48,7 @@ namespace detail {
 }
 
 template <class... Args>
-auto make_projection = [](auto&& fn, auto&& proj) {
+constexpr auto make_projection = [](auto&& fn, auto&& proj) {
     return detail::make_projection_impl<
         std::remove_reference_t<decltype(fn)>, std::remove_reference_t<decltype(proj)>,
         Args...>{
@@ -57,11 +59,13 @@ auto make_projection = [](auto&& fn, auto&& proj) {
 
 // std::priority_queue を C++20 風にしたらこんな感じかなという実装
 // 改善のアイデア
-//  Compare, Proj にコンセプト追加
 template <class T,
          std::ranges::random_access_range Cont = std::vector<T>,
          class Compare = std::less<T>,
          class Proj = std::identity>
+     requires std::convertible_to<T, std::ranges::range_value_t<Cont>>
+       && std::invocable<Proj, T const&>
+       && std::predicate<Compare, std::invoke_result_t<Proj, T const&>, std::invoke_result_t<Proj, T const&>>
 class prior_que {
     using value_type = T;
     using size_type = std::ranges::range_size_t<Cont>;
@@ -82,6 +86,7 @@ public:
     }
 
     template <std::forward_iterator St, std::sentinel_for<St> En>
+        requires std::convertible_to<std::iter_value_t<St>, T>
     prior_que(St start, En end, Compare&& comparer = {}, Proj&& proj = {})
     : data_{start, end},
       comparer_{make_projection<T const&, T const&>(
@@ -93,6 +98,7 @@ public:
     }
 
     template <std::ranges::forward_range Src>
+        requires std::convertible_to<std::ranges::range_value_t<Src>, T>
     explicit prior_que(Src const& container, Compare&& comparer = {}, Proj&& proj = Proj{})
         : prior_que(std::ranges::begin(container), std::ranges::end(container),
                 std::forward<Compare>(comparer), std::forward<Proj>(proj))
@@ -121,6 +127,7 @@ public:
     }
 
     template <class... Args>
+        requires std::constructible_from<T, Args...>
     void emplace(Args&&... args) {
         data_.emplace_back(std::forward<Args>(args)...);
         std::push_heap(std::ranges::begin(data_), std::ranges::end(data_), comparer_);
