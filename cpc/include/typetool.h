@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 
 namespace challenge100 {
 
@@ -25,7 +26,16 @@ namespace challenge100 {
     template <class Default, template <class...> class Checker, class... Args>
         using detected_or_t = typename detail::detector<Default, void, Checker, Args...>::type;
 
-    template <auto F>
-        std::true_type detect_constexpr_invocable(decltype(int{(F(), 0u)}) = 0);
+    template <auto func, auto... args>
+        requires std::invocable<decltype(func), decltype(args)...>
+        std::true_type detect_constexpr_invocable(decltype(int{(std::invoke(func, args...), 0u)}) = 0);
+
+#if 0
+    // this cannot detect constexpr
+    template <class Fn, class... Args>
+        requires std::invocable<Fn, Args...>
+        std::true_type detect_constexpr_invocable0(Fn func, Args... args,
+                decltype(int{(std::invoke(func, args...), 0u)} = 0));
+#endif
 
 }
