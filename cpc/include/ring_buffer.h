@@ -1,6 +1,7 @@
 #pragma once
 #include <cassert>
 #include <vector>
+#include <initializer_list>
 #include <ranges>
 #include <type_traits>
 #include <concepts>
@@ -8,17 +9,6 @@
 #include "typetool.h"
 
 namespace challenge100 {
-
-#if 0
-    template <class T>
-        using check_m_empty_constexpr = decltype(
-                //detect_constexpr_invocable<[]() { return T{}.empty(); }>()
-                detect_constexpr_invocable<&T::empty, T{}>()  // ←↑ どっちでも機能する
-                );
-    template <class T>
-        //using is_empty_constexpr = detect<T, check_m_empty_constexpr>;
-        using is_empty_constexpr = is_detected<check_m_empty_constexpr, T>;
-#endif
 
 template <class T,
           std::ranges::random_access_range Container = std::vector<T>>
@@ -31,12 +21,25 @@ struct ring_buffer {
     using const_iterator = std::add_const_t<iterator>;
 
   private:
-    template <class C>
-        using check_container_empty_constexpr = decltype(
-                //detect_constexpr_invocable<[]() { return ContT{}.empty(); }>()
-                detect_constexpr_invocable<&C::empty, C{}>()  // ←↑ どっちでも機能する
-                );
+    template <class C> using check_container_empty_constexpr = decltype(
+            //detect_constexpr_invocable<[]() { return ContT{}.empty(); }>()
+            detect_constexpr_invocable<&C::empty, C{}>()  // ←↑ どっちでも機能する
+            );
+    template <class C> using check_container_size_constexpr = decltype(
+            detect_constexpr_invocable<&C::size, C{}>()
+            );
     static inline constexpr bool is_empty_constexpr = is_detected_v<check_container_empty_constexpr, Container>;
+    static inline constexpr bool is_size_constexpr = is_detected_v<check_container_size_constexpr, Container>;
+
+    static inline constexpr size_type calc_next_pos(size_type head, size_type capacity) noexcept
+    {
+        return (head + 1) % capacity;
+    }
+
+    static inline constexpr size_type calc_first_pos(size_type head, size_type size, size_type capacity) noexcept
+    {
+        return (head + capacity - size + 1) % capacity;
+    }
 
     size_type next_pos() const noexcept {
         if constexpr (is_empty_constexpr)  {
@@ -44,7 +47,7 @@ struct ring_buffer {
         }
         return size_ == 0
             ? 0
-            : (head_ + 1) % c.size();
+            : calc_next_pos(head_, c.size());
     }
 
     size_type first_pos () const noexcept {
@@ -53,7 +56,7 @@ struct ring_buffer {
         }
         return size_ == 0
             ? 0
-            : (head_ + c.size() - size_ + 1) % c.size();
+            : calc_first_pos(head_, size_, c.size());
     }
 
   public:
@@ -61,30 +64,53 @@ struct ring_buffer {
         requires std::constructible_from<Container, Args...>
     explicit ring_buffer(Args... arg)
     noexcept(std::is_nothrow_constructible_v<Container, Args...> && is_empty_constexpr)
-    : c{std::forward<Args>(arg)...}
+    : c(std::forward<Args>(arg)...)
     {
         if constexpr (!is_empty_constexpr)  {
             if (c.empty())
                 throw std::range_error("the container must not be empty");
         }
     }
-#if 0
-    explicit ring_buffer(Container const& cont)
-        noexcept(std::is_nothrow_copy_constructible_v<Container>)
-        requires std::is_copy_constructible_v<Container>
-        :c{cont}
-    {
-    }
-#endif
+
     explicit ring_buffer(Container&& cont)
-        noexcept(std::is_rvalue_reference_v<Container>
-                ? std::is_nothrow_move_constructible_v<Container>
-                : std::is_copy_constructible_v<Container>)
-        requires (std::is_rvalue_reference_v<Container>
-                ? std::is_move_constructible_v<Container>
-                : std::is_copy_constructible_v<Container>)
-        :c{std::forward<Container>(cont)}
+        noexcept(is_nothrow_forward_constructible_v<decltype(cont)>)
+        requires is_forward_constructible_v<decltype(cont)>
+        : c{std::forward<Container>(cont)}
     {}
+
+    ring_buffer(std::initializer_list<T> l)
+        noexcept(std::is_nothrow_constructible_v<Container, std::initializer_list<T>>)
+        requires std::constructible_from<Container, std::initializer_list<T>>
+        : c{l}
+        , head_{l.size() == 0
+            ? empty_head
+            : calc_next_pos(l.size() - 2, is_size_constexpr ? Container{}.size() : l.size())}
+        , size_{is_size_constexpr && (l.size() > Container{}.size()) ? Container{}.size() : l.size()}
+    {
+        trace(std::cout);
+    }
+
+    ring_buffer(std::initializer_list<T> l)
+        requires (is_empty_constexpr && is_size_constexpr
+                && !Container{}.empty()
+                && !std::constructible_from<Container, std::initializer_list<T>>
+                && std::is_default_constructible_v<Container>)
+        : c{}
+        , head_{l.size() == 0
+            ? empty_head
+            : calc_next_pos(l.size() - 2, Container{}.size())}
+        , size_{std::min(l.size(), Container{}.size())}
+    {
+        trace(std::cout);
+        if (l.size() > 0) {
+            auto pos = l.size() < Container{}.size() ? 0u : l.size() - Container{}.size();
+            for (auto itr = std::ranges::begin(l) + pos; itr != std::ranges::end(l); ++itr, ++pos) {
+                std::cout << "(" << pos << "," << *itr << ")\n";
+                c[pos % Container{}.size()] = *itr;
+            }
+        }
+        trace(std::cout);
+    }
 
     void clear() noexcept {
         head_ = empty_head;

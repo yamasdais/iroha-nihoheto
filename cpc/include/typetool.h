@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <type_traits>
 
 namespace challenge100 {
 
@@ -38,4 +39,18 @@ namespace challenge100 {
                 decltype(int{(std::invoke(func, args...), 0u)} = 0));
 #endif
 
+    template <class RefT, class T = std::remove_reference_t<RefT>>
+        using is_forward_constructible = std::conditional_t<std::is_rvalue_reference_v<RefT>,
+              typename std::is_move_constructible<T>::type, typename std::is_copy_constructible<T>::type>;
+
+    template <class RefT, class T = std::remove_reference_t<RefT>>
+        constexpr inline bool is_forward_constructible_v = is_forward_constructible<RefT, T>::value;
+
+    template <class RefT, class T = std::remove_reference_t<RefT>>
+        using is_nothrow_forward_constructible = std::conditional_t<std::is_rvalue_reference_v<RefT>,
+              typename std::is_nothrow_move_constructible<T>::type,
+              typename std::is_nothrow_copy_constructible<T>::type>;
+
+    template <class RefT, class T = std::remove_reference_t<RefT>>
+        constexpr inline bool is_nothrow_forward_constructible_v = is_nothrow_forward_constructible<RefT, T>::value;
 }

@@ -4,9 +4,10 @@
 #include "ring_buffer.h"
 
 void test0() {
-    using cont_type = std::vector<int>;
-    cpc::ring_buffer<int> buf{cont_type(5)};
-    std::cout << "ring_buffer<int>" << "\n";
+    //using cont_type = std::vector<int>;
+    //cpc::ring_buffer<int> buf{cont_type(5)};
+    cpc::ring_buffer<int> buf(5u);
+    std::cout << "ring_buffer<int>\n";
     buf.push(1);
     buf.push(2);
     buf.push(3);
@@ -20,13 +21,17 @@ void test0() {
     //
     //using is_c = cpc::is_empty_constexpr<cont_type>;
     //cpc::TypeTracer<is_c> y;
+    std::cout << "ring_buffer<int>: initializer_list\n";
+    cpc::ring_buffer<int> buf0{ 0, 1, 2, 3 };
+    item = buf0.pop();
+    buf0.push(4);
 }
 
 void test_array() {
     using cont_type = std::array<int, 5>;
-    cpc::ring_buffer<int, cont_type> buf{};
+    cpc::ring_buffer<int, cont_type> buf;
     cpc::ring_buffer<int, std::array<int, 0>> buf_e{};
-    std::cout << "ring_buffer<int, std::array<int, 5>>" << "\n";
+    std::cout << "ring_buffer<int, std::array<int, 5>>\n";
     buf.push(1);
     buf.push(2);
     buf.push(3);
@@ -42,22 +47,9 @@ void test_array() {
     item = buf.pop();
     item = buf.pop();
     buf.push(9);
-    //auto itr = buf.begin();
-    //cpc::TypeTracer<decltype(itr)::const_reference> x0;
-    //cpc::TypeTracer<decltype(buf)::const_iterator> x;
-    //buf_e.push(2);
-    //buf.push(2);
-    //cpc::TypeTracer<decltype(buf)::foo> x;
-    //constexpr auto x = cpc::tt<decltype(buf)::container_type>();
-    //using is_c = cpc::is_empty_constexpr<decltype(buf)::container_type>::type;
-    //using emp_type = decltype(&cont_type::empty);
-    //using em = decltype(cpc::is_member_constexpr_concl<cont_type, &cont_type::empty>(0));
-    //cpc::TypeTracer<em> t0;
-    //using aa1 = cpc::check_m_empty_constexpr<cont_type>;
-    //cpc::TypeTracer<aa1> y;
-    //using aa0 = decltype(cpc::detect_constexpr_invocable<[]() { return cont_type{}.empty(); }>(0));
-    //using is_c = cpc::is_empty_constexpr<cont_type>;
-    //cpc::TypeTracer<is_c> y;
+    std::cout << "ring_buffer<int, std::array<int, 5>>: initializer_list\n";
+    cpc::ring_buffer<int, cont_type> buf0{ 0, 1, 2, 3, 4, 5 };
+    buf0.push(99);
 }
 
 int main(int, char**) {

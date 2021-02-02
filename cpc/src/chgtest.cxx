@@ -5,9 +5,11 @@
 #include <type_traits>
 #include <vector>
 
+#include <boost/type_index.hpp>
 #include "challenge.h"
 #include "sequence_view.h"
 #include "str_util.h"
+#include "typetool.h"
 
 template <class T, class U>
 concept asig = requires(T lhs, U&& rhs) {
@@ -25,6 +27,11 @@ bool check_ItrTrait() {
     return std::forward_iterator<T>;
 }
 
+template <class T>
+void print_decltype(T&& t) {
+    std::cout << boost::typeindex::type_id_with_cvr<decltype(t)>().pretty_name() << "\n";
+}
+
 void test0() {
     auto constexpr fn = [](auto n) { return n * 2; };
     auto constexpr seq = cpc::sequence_view(fn, 1, 3);
@@ -35,7 +42,6 @@ void test0() {
     using fnT = decltype(fn);
     using seqT = decltype(seq);
     using itrT = decltype(itr);
-    std::cout << std::boolalpha;
     std::cout << "lambda trait: " << check_trait<fnT>() << std::endl;
     std::cout << "sequence trait: " << check_trait<seqT>() << std::endl;
     std::cout << "typeof fn: " << cpc::nameT<fnT>() << std::endl;
@@ -79,6 +85,29 @@ void test1() {
     std::ranges::for_each(seq | std::views::take(20),
                           [](auto num) { std::cout << num << ", "; });
     std::cout << std::endl;
+}
+
+template <class T>
+void print_constructible(T&& c) {
+    print_decltype(std::forward<T>(c));
+    std::cout << "move_constructible: " << std::is_move_constructible_v<decltype(c)> << "\n";
+    std::cout << "forward_constructible: " << cpc::is_forward_constructible_v<decltype(c)> << "\n";
+    std::cout << "nothrow_forward_constructible: " << cpc::is_nothrow_forward_constructible_v<decltype(c)> << "\n";
+}
+
+
+void test3() {
+    int val = 42;
+    std::cout << "test2(), lvalue: ";
+    print_decltype(val);
+    std::cout << "test2(), rvalue: ";
+    print_decltype(42);
+    std::vector<int> vec;
+    std::array<int, 10> ary{{ 0, 1, 42, 3, 5, 6, 3}};
+    print_constructible(vec);
+    print_constructible(std::move(vec));
+    print_constructible(ary);
+    print_constructible(std::move(ary));
 }
 
 template <class T>
@@ -146,9 +175,11 @@ void test2() {
 }
 
 int main(int, char**) {
-    test0();
-    test1();
-    test2();
-    fibonacci();
+    std::cout << std::boolalpha;
+    //test0();
+    //test1();
+    //test2();
+    test3();
+    //fibonacci();
     return 0;
 }
