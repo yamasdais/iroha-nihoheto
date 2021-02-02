@@ -16,6 +16,7 @@ endif()
 set(coroutine_required chgtest;chg024;chg025;chg026;chg027;chg029;chg037)
 set(libprocps_required chg033)
 set(boost_fs_required chg034)
+set(pthread_required chg047)
 
 find_package(Threads REQUIRED)
 
@@ -74,6 +75,10 @@ if(PROCPS_FOUND)
         target_compile_definitions(${procps_targ} PRIVATE USE_PROCPS=1)
     endforeach()
 endif()
+
+foreach (pthread_targ IN LISTS pthread_required)
+    target_link_libraries(${pthread_targ} Threads::Threads)
+endforeach()
 
 #add_executable(chg001 chg001.cxx)
 #if(CMAKE_COMPILER_IS_GNUCXX)

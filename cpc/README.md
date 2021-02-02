@@ -78,9 +78,9 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg043.cxx](src/chg043.cxx)|複数のタイムゾーンの打ち合わせ時刻|〃
 |[chg044.cxx](src/chg044.cxx)|月間カレンダー|〃
 |__アルゴリズムとデータ構造__
-|[chg045.cxx](src/chg045.cxx)|priority queue|std ライブラリにも有るんだが、prior_que として実装。C++20 らしくしてみた。
-|[chg046.cxx](src/chg046.cxx)|リングバッファ|
-|[chg047.cxx](src/chg047.cxx)|
+|[chg045.cxx](src/chg045.cxx)|priority queue|std ライブラリにも有るんだが、[prior_que](include/prior_que.h) として実装。C++20 らしくしてみた。
+|[chg046.cxx](src/chg046.cxx)|リングバッファ|constexpr の SFINAE 判定を作った。[ring_buffer](include/ring_buffer.h) なかなか手間暇掛かった一品
+|[chg047.cxx](src/chg047.cxx)|Double buffer|thread join() の基礎。mutex のお手本[dbl_buffer](include/dbl_buffer.h)
 |[chg048.cxx](src/chg048.cxx)|
 |[chg049.cxx](src/chg049.cxx)|
 |[chg050.cxx](src/chg050.cxx)|
