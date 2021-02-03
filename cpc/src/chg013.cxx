@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include "challenge.h"
+#include "functional.h"
 
 template <class E, class D>
 double compute_pi(E& engine, D& distrib, int const samples = 5'000'000) {

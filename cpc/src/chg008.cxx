@@ -7,6 +7,7 @@
 #include <type_traits>
 
 #include "challenge.h"
+#include "functional.h"
 
 // アームストロング数
 

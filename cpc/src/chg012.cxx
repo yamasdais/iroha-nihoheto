@@ -5,6 +5,7 @@
 #include <concepts>
 
 #include "challenge.h"
+#include "functional.h"
 #include "sequence_view.h"
 
 // コラッツ数列

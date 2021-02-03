@@ -5,6 +5,7 @@
 #include <cctype>
 
 #include "challenge.h"
+#include "functional.h"
 #include "sequence_view.h"
 
 // ISBN check

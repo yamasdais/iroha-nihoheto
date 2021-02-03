@@ -35,34 +35,6 @@ auto nameT() noexcept(
     return boost::typeindex::type_id_with_cvr<T>().pretty_name();
 }
 
-struct accum_fn {
-    template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
-              class BinaryFn, class Init, class Proj = std::identity>
-    requires std::convertible_to<
-        std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>,
-        Init> constexpr Init
-    operator()(IStart st, IEnd en, Init&& init, BinaryFn&& func,
-               Proj proj = {}) const {
-        Init ret = std::forward<Init>(init);
-        for (; st != en; ++st) {
-            ret = std::invoke(std::forward<BinaryFn>(func), std::move(ret),
-                              std::invoke(proj, *st));
-        }
-        return ret;
-    }
-
-    template <std::ranges::forward_range Range, class BinaryFn, class Init,
-              class Proj = std::identity>
-    constexpr Init operator()(Range&& range, Init&& init, BinaryFn&& func,
-                              Proj proj = {}) const {
-        return (*this)(std::ranges::begin(range), std::ranges::end(range),
-                       std::forward<Init>(init), std::forward<BinaryFn>(func),
-                       std::forward<Proj>(proj));
-    }
-};
-
-inline constexpr accum_fn accum = accum_fn{};
-
 template <class T>
 requires std::ranges::range<T> auto constexpr toIters(T& container)
     -> std::pair<decltype(std::ranges::begin(container)),
