@@ -6,12 +6,16 @@
 
 namespace challenge100 {
 
+namespace detail {
+
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
               class BinaryFn, class Init, class Proj = std::identity>
-    requires std::convertible_to<
-        std::invoke_result_t<BinaryFn, Init, std::iter_value_t<IStart>>,
-        Init> constexpr Init
+    requires (std::convertible_to<std::invoke_result_t<Proj, std::iter_value_t<IStart>>, Init>
+           && std::convertible_to<
+        std::invoke_result_t<BinaryFn, Init, std::invoke_result_t<Proj, std::iter_value_t<IStart>>>,
+        Init>)
+    constexpr Init
     operator()(IStart st, IEnd en, Init&& init, BinaryFn&& func,
                Proj proj = {}) const {
         Init ret = std::forward<Init>(init);
@@ -32,7 +36,9 @@ struct accum_fn {
     }
 };
 
-inline constexpr accum_fn accum = accum_fn{};
+}
+
+inline constexpr detail::accum_fn accum = detail::accum_fn{};
 
 // C++20 で導入された ranges projection で比較関数とかに使える lambda を生成する
 #if 0
