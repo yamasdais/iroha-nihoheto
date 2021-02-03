@@ -13,7 +13,7 @@ else()
     message(STATUS "Unknown OS ${CMAKE_SYSTEM_NAME}.")
 endif()
 
-set(coroutine_required chgtest;chg024;chg025;chg026;chg027;chg029;chg037)
+set(coroutine_required chgtest;chg024;chg025;chg026;chg027;chg029;chg037;chg048)
 set(libprocps_required chg033)
 set(boost_fs_required chg034)
 set(pthread_required chg047)
