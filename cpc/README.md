@@ -83,8 +83,8 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg047.cxx](src/chg047.cxx)|Double buffer|thread join() の基礎。mutex のお手本[dbl_buffer](include/dbl_buffer.h)
 |[chg048.cxx](src/chg048.cxx)|最頻出要素抽出|ranges のお手本的書き方
 |[chg049.cxx](src/chg049.cxx)|text ヒストグラム|これも ranges 使うやつ
-|[chg050.cxx](src/chg050.cxx)|
-|[chg051.cxx](src/chg051.cxx)|
+|[chg050.cxx](src/chg050.cxx)|電話番号リストフィルタ国番号|regex と coroutine で実装する
+|[chg051.cxx](src/chg051.cxx)|電話番号変換処理|transform の使い方
 |[chg052.cxx](src/chg052.cxx)|
 |[chg053.cxx](src/chg053.cxx)|
 |[chg054.cxx](src/chg054.cxx)|

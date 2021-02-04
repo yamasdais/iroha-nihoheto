@@ -159,8 +159,8 @@ struct collats_sequence_fn {
 };
 
 template <std::ranges::range Range>
-void print_range(Range const& range) {
-    std::ranges::copy(range, std::ostream_iterator<std::ranges::range_value_t<Range>>(std::cout, " "));
+void print_range(Range const& range, char const* separator = " ") {
+    std::ranges::copy(range, std::ostream_iterator<std::ranges::range_value_t<Range>>(std::cout, separator));
 }
 
 bool are_equal(double const d1, double const d2, double const epsilon = 0.001)
