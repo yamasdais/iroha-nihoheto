@@ -86,8 +86,8 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg050.cxx](src/chg050.cxx)|電話番号リストフィルタ国番号|regex と coroutine で実装する
 |[chg051.cxx](src/chg051.cxx)|電話番号変換処理|transform の使い方
 |[chg052.cxx](src/chg052.cxx)|文字列の順列生成|ranges 版の rotate, next_permutation を使った
-|[chg053.cxx](src/chg053.cxx)|
-|[chg054.cxx](src/chg054.cxx)|
+|[chg053.cxx](src/chg053.cxx)|平均評価|erase 使わずに trim してみる
+|[chg054.cxx](src/chg054.cxx)|ペア作成algorithm|より一般性を持たせて、adjacent_map を作る
 |[chg055.cxx](src/chg055.cxx)|
 |[chg056.cxx](src/chg056.cxx)|
 |[chg057.cxx](src/chg057.cxx)|

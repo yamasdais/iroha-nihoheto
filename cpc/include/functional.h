@@ -10,7 +10,7 @@ namespace detail {
 
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
-              class BinaryFn, class Init, class Proj = std::identity>
+              class Init, class BinaryFn, class Proj = std::identity>
     requires (std::convertible_to<std::invoke_result_t<Proj, std::iter_value_t<IStart>>, Init>
            && std::convertible_to<
         std::invoke_result_t<BinaryFn, Init, std::invoke_result_t<Proj, std::iter_value_t<IStart>>>,
@@ -26,7 +26,7 @@ struct accum_fn {
         return ret;
     }
 
-    template <std::ranges::forward_range Range, class BinaryFn, class Init,
+    template <std::ranges::forward_range Range, class Init, class BinaryFn,
               class Proj = std::identity>
     constexpr Init operator()(Range&& range, Init&& init, BinaryFn&& func,
                               Proj proj = {}) const {
