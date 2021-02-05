@@ -85,7 +85,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg049.cxx](src/chg049.cxx)|text ヒストグラム|これも ranges 使うやつ
 |[chg050.cxx](src/chg050.cxx)|電話番号リストフィルタ国番号|regex と coroutine で実装する
 |[chg051.cxx](src/chg051.cxx)|電話番号変換処理|transform の使い方
-|[chg052.cxx](src/chg052.cxx)|
+|[chg052.cxx](src/chg052.cxx)|文字列の順列生成|ranges 版の rotate, next_permutation を使った
 |[chg053.cxx](src/chg053.cxx)|
 |[chg054.cxx](src/chg054.cxx)|
 |[chg055.cxx](src/chg055.cxx)|
