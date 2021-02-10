@@ -87,8 +87,8 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg051.cxx](src/chg051.cxx)|電話番号変換処理|transform の使い方
 |[chg052.cxx](src/chg052.cxx)|文字列の順列生成|ranges 版の rotate, next_permutation を使った
 |[chg053.cxx](src/chg053.cxx)|平均評価|erase 使わずに trim してみる
-|[chg054.cxx](src/chg054.cxx)|ペア作成algorithm|より一般性を持たせて、adjacent_view を作る。ranges ライブラリの体裁で[実装](include/adjacent_view.h)してみた。
-|[chg055.cxx](src/chg055.cxx)|
+|[chg054.cxx](src/chg054.cxx)|ペア作成algorithm|c++20らしく range として adjacent_view を作る。ranges ライブラリの体裁で[実装](include/adjacent_view.h)してみた
+|[chg055.cxx](src/chg055.cxx)|Zip algorithm|これも range 対応版として作る
 |[chg056.cxx](src/chg056.cxx)|
 |[chg057.cxx](src/chg057.cxx)|
 |[chg058.cxx](src/chg058.cxx)|

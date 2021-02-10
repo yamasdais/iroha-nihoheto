@@ -16,7 +16,12 @@ namespace challenge100 {
                 using value_t = std::true_type;
                 using type = Checker<Args...>;
             };
+
+        template <bool IsConst, class T>
+            using maybe_const = std::conditional_t<IsConst, std::add_const_t<T>, T>;
+
     }
+
     template <template <class...> class Checker, class... Args>
         using is_detected = typename detail::detector<void*, void, Checker, Args...>::value_t;
     template <template <class...> class Checker, class... Args>

@@ -5,11 +5,9 @@
 #include <concepts>
 #include <utility>
 
+#include "typetool.h"
+
 namespace challenge100 {
-namespace detail {
-    template <bool IsConst, class T>
-        using maybe_const = std::conditional_t<IsConst, std::add_const_t<T>, T>;
-}
 
 template <std::ranges::input_range V, std::copy_constructible Func>
 requires std::ranges::view<V> && std::is_object_v<Func>

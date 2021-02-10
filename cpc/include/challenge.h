@@ -178,6 +178,20 @@ std::optional<T> make_optional_if(bool cond, F&& func) {
     return cond ? std::optional<T>{ std::invoke(std::forward<F>(func)) } : std::optional<T>{};
 }
 
+constexpr auto mkpair = [](auto const fst, auto const snd) {
+    return std::make_pair(fst, snd);
+};
+
+namespace stream {
+
+template <class T0, class T1>
+std::ostream& operator<<(std::ostream& out, std::pair<T0, T1> const& p) {
+    out << "(" << p.first << "," << p.second << ")";
+    return out;
+}
+
+} // challenge100::stream
+
 }  // namespace challenge100
 
 namespace cpc = challenge100;
