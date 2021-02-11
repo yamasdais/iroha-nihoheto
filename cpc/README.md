@@ -89,8 +89,8 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg053.cxx](src/chg053.cxx)|平均評価|erase 使わずに trim してみる
 |[chg054.cxx](src/chg054.cxx)|ペア作成algorithm|c++20らしく range として adjacent_view を作る。ranges ライブラリの体裁で[実装](include/adjacent_view.h)してみた
 |[chg055.cxx](src/chg055.cxx)|Zip algorithm|これも range 対応版として作る
-|[chg056.cxx](src/chg056.cxx)|
-|[chg057.cxx](src/chg057.cxx)|
+|[chg056.cxx](src/chg056.cxx)|Select algorithm|この用途だと ranges::transform_view で代用できる
+|[chg057.cxx](src/chg057.cxx)|quick sort|sort は std:: にもあるけど実装してみた
 |[chg058.cxx](src/chg058.cxx)|
 |[chg059.cxx](src/chg059.cxx)|
 |[chg060.cxx](src/chg060.cxx)|
