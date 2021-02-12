@@ -91,8 +91,8 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg055.cxx](src/chg055.cxx)|Zip algorithm|これも range 対応版として作る
 |[chg056.cxx](src/chg056.cxx)|Select algorithm|この用途だと ranges::transform_view で代用できる
 |[chg057.cxx](src/chg057.cxx)|quick sort|sort は std:: にもあるけど、partition だけ std:: のを使った
-|[chg058.cxx](src/chg058.cxx)|グラフalgorithm|Djjkstra の最短経路探索
-|[chg059.cxx](src/chg059.cxx)|
+|[chg058.cxx](src/chg058.cxx)|グラフalgorithm|Djjkstra の最短経路探索。std::ranges::ref_view が便利だということに気づいた
+|[chg059.cxx](src/chg059.cxx)|イタチalgorithm|有る種機械学習的なアルゴリズム
 |[chg060.cxx](src/chg060.cxx)|
 |[chg061.cxx](src/chg061.cxx)|
 |[chg062.cxx](src/chg062.cxx)|
