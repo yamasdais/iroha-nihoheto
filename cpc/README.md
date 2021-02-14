@@ -93,8 +93,9 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg057.cxx](src/chg057.cxx)|quick sort|sort は std:: にもあるけど、partition だけ std:: のを使った
 |[chg058.cxx](src/chg058.cxx)|グラフalgorithm|Djjkstra の最短経路探索。std::ranges::ref_view が便利だということに気づいた
 |[chg059.cxx](src/chg059.cxx)|イタチalgorithm|有る種機械学習的なアルゴリズム
-|[chg060.cxx](src/chg060.cxx)|
-|[chg061.cxx](src/chg061.cxx)|
+|[chg060.cxx](src/chg060.cxx)|Life Game|c++20ぽくするネタがあまり思いつかず、ちょっと ranges を使った程度
+__並行処理__
+|[chg061.cxx](src/chg061.cxx)|並列変換処理|
 |[chg062.cxx](src/chg062.cxx)|
 |[chg063.cxx](src/chg063.cxx)|
 |[chg064.cxx](src/chg064.cxx)|
