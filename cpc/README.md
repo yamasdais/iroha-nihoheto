@@ -95,7 +95,7 @@ module については g++ もまだ未対応なので、現時点では使わ�
 |[chg059.cxx](src/chg059.cxx)|イタチalgorithm|有る種機械学習的なアルゴリズム
 |[chg060.cxx](src/chg060.cxx)|Life Game|c++20ぽくするネタがあまり思いつかず、ちょっと ranges を使った程度
 __並行処理__
-|[chg061.cxx](src/chg061.cxx)|並列変換処理|
+|[chg061.cxx](src/chg061.cxx)|並列変換処理|algorithm の execution を指定するよりも自分で thread を限界まで生成するのが速い事がわかった。
 |[chg062.cxx](src/chg062.cxx)|
 |[chg063.cxx](src/chg063.cxx)|
 |[chg064.cxx](src/chg064.cxx)|
