@@ -16,7 +16,7 @@ endif()
 set(coroutine_required chgtest;chg024;chg025;chg026;chg027;chg029;chg037;chg048;chg050)
 set(libprocps_required chg033)
 set(boost_fs_required chg034)
-set(pthread_required chg047;chg061;chg062)
+set(pthread_required chg047;chg061;chg062;chg063)
 
 find_package(Threads REQUIRED)
 
