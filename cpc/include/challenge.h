@@ -102,7 +102,7 @@ struct perf_timer {
         requires std::invocable<F, Args...>
     static auto duration(F&& func, Args&& ...args) {
         auto start = Clock::now();
-        if constexpr (std::is_invocable_r_v<void, F, Args...>) {
+        if constexpr (std::same_as<void, std::invoke_result_t<F, Args...>>) {
             std::invoke(std::forward<F>(func), std::forward<Args>(args)...);
             return std::chrono::duration_cast<Time>(Clock::now() - start);
         } else {
