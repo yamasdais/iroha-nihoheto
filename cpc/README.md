@@ -98,7 +98,7 @@ __並行処理__
 |[chg061.cxx](src/chg061.cxx)|並列変換処理|algorithm の execution を指定するよりも自分で thread を限界まで生成するのが速い事がわかった。
 |[chg062.cxx](src/chg062.cxx)|最大最小を求める並列処理|自前のthread分割処理を実装する
 |[chg063.cxx](src/chg063.cxx)|最大最小を求める非同期処理|async を使う。coroutine 版もそのうちやってみる
-|[chg064.cxx](src/chg064.cxx)|
+|[chg064.cxx](src/chg064.cxx)|並列クイックソート|057 の別バージョン
 |[chg065.cxx](src/chg065.cxx)|
 |[chg066.cxx](src/chg066.cxx)|
 |[chg067.cxx](src/chg067.cxx)|
