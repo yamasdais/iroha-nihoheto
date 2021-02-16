@@ -6,28 +6,7 @@
 #include <string_view>
 
 #include "challenge.h"
-
-struct logger {
-    static logger& instance() {
-        static logger log__;
-        return log__;
-    }
-    logger(logger const&) = delete;
-    logger& operator=(logger const&) = delete;
-    logger(logger&&) = delete;
-    logger& operator=(logger&&) = delete;
-
-    void log(std::string_view const& message) {
-        std::lock_guard lock(mt);
-        std::cout << "LOG: " << message << std::endl;
-    }
-
-  protected:
-    logger() = default;
-
-  private:
-    std::mutex mt;
-};
+#include "logger.h"
 
 void test0() {
     std::vector<std::thread> modules;
@@ -39,11 +18,11 @@ void test0() {
                 std::uniform_int_distribution<> ud(100, 1000);
                 auto ident = "module " + std::to_string(id);
 
-                logger::instance().log(ident + " started");
+                cpc::logger::instance().log(ident + " started");
 
                 std::this_thread::sleep_for(std::chrono::milliseconds(ud(mt)));
 
-                logger::instance().log(ident + " finished");
+                cpc::logger::instance().log(ident + " finished");
                 });
     }
 

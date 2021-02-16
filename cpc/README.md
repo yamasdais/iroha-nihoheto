@@ -100,7 +100,7 @@ __並行処理__
 |[chg063.cxx](src/chg063.cxx)|最大最小を求める非同期処理|async を使う。coroutine 版もそのうちやってみる
 |[chg064.cxx](src/chg064.cxx)|並列クイックソート|057 の別バージョン
 |[chg065.cxx](src/chg065.cxx)|thread safe ログ|038 の排他制御版
-|[chg066.cxx](src/chg066.cxx)|
+|[chg066.cxx](src/chg066.cxx)|CS モデル|mt アプリケーション。条件変数のサンプル
 |[chg067.cxx](src/chg067.cxx)|
 |[chg068.cxx](src/chg068.cxx)|
 |[chg069.cxx](src/chg069.cxx)|
