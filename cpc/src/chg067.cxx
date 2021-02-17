@@ -34,12 +34,10 @@ struct password_validator_decorator : public password_validator {
     {}
 
     virtual bool validate(std::string_view password) const override {
-        if (!inner->validate(password))
-            return false;
-        return std::invoke(func, password);
+        return inner->validate(password) && std::invoke(func, password);
     }
 
-    private:
+  private:
     std::unique_ptr<password_validator> inner;
 };
 
