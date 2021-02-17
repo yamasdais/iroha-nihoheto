@@ -101,7 +101,8 @@ __並行処理__
 |[chg064.cxx](src/chg064.cxx)|並列クイックソート|057 の別バージョン
 |[chg065.cxx](src/chg065.cxx)|thread safe ログ|038 の排他制御版
 |[chg066.cxx](src/chg066.cxx)|CS モデル|mt アプリケーション。条件変数のサンプル
-|[chg067.cxx](src/chg067.cxx)|
+__デザインパターン__
+|[chg067.cxx](src/chg067.cxx)|パスワードの検証|Decorator pattern。CRTP でやれないか？今後の課題
 |[chg068.cxx](src/chg068.cxx)|
 |[chg069.cxx](src/chg069.cxx)|
 |[chg070.cxx](src/chg070.cxx)|
