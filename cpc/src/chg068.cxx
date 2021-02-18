@@ -14,6 +14,7 @@ struct password_generator {
     virtual std::string generate() = 0;
     virtual void add(std::unique_ptr<password_generator>) {
     }
+    virtual ~password_generator() = default;
 };
 
 template <auto func>
