@@ -11,10 +11,9 @@ namespace detail {
 struct accum_fn {
     template <std::forward_iterator IStart, std::sentinel_for<IStart> IEnd,
               class Init, class BinaryFn, class Proj = std::identity>
-    requires (std::convertible_to<std::invoke_result_t<Proj, std::iter_value_t<IStart>>, Init>
-           && std::convertible_to<
+    requires std::convertible_to<
         std::invoke_result_t<BinaryFn, Init, std::invoke_result_t<Proj, std::iter_value_t<IStart>>>,
-        Init>)
+        Init>
     constexpr Init
     operator()(IStart st, IEnd en, Init&& init, BinaryFn&& func,
                Proj proj = {}) const {

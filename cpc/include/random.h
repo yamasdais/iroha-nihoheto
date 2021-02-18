@@ -22,6 +22,12 @@ struct mt19937seed {
     }
 };
 
+static inline
+std::mt19937& mt19937engine() {
+    static std::mt19937 engine{mt19937seed::instance()};
+    return engine;
+}
+
 } // ns: detail
 
 template <class Dist>
@@ -30,17 +36,15 @@ struct random_generator {
 
     template <class... Args>
     random_generator(Args&& ...arg)
-    : distrib(std::forward<Args>(arg)...), mt{detail::mt19937seed::instance()}
+    : distrib(std::forward<Args>(arg)...)
     { }
 
     result_type operator()() {
-        return distrib(mt);
+        return distrib(detail::mt19937engine());
     }
-
 
   private:
     Dist distrib;
-    std::mt19937 mt;
 };
 
 } // ns:challenge100

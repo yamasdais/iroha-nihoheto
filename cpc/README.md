@@ -102,8 +102,8 @@ __並行処理__
 |[chg065.cxx](src/chg065.cxx)|thread safe ログ|038 の排他制御版
 |[chg066.cxx](src/chg066.cxx)|CS モデル|mt アプリケーション。条件変数のサンプル
 __デザインパターン__
-|[chg067.cxx](src/chg067.cxx)|パスワードの検証|Decorator pattern。CRTP でやれないか？今後の課題
-|[chg068.cxx](src/chg068.cxx)|
+|[chg067.cxx](src/chg067.cxx)|パスワードの検証|Decorator pattern。
+|[chg068.cxx](src/chg068.cxx)|パスワード生成|Composite pattern。非型template に string_view は渡せないが、lambda を渡せば意図を汲める事に気づいた。
 |[chg069.cxx](src/chg069.cxx)|
 |[chg070.cxx](src/chg070.cxx)|
 |[chg071.cxx](src/chg071.cxx)|
