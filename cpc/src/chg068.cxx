@@ -49,7 +49,7 @@ struct composite_password_generator : public password_generator {
     std::string generate() {
         std::string ret = cpc::accum(generators, std::string{},
                 [](std::string acc, std::unique_ptr<password_generator> const& generator) {
-                return acc + generator->generate();
+                    return acc.append(generator->generate());
                 });
         std::ranges::shuffle(ret, cpc::detail::mt19937engine());
         return ret;
@@ -59,21 +59,21 @@ struct composite_password_generator : public password_generator {
     std::vector<std::unique_ptr<password_generator>> generators;
 };
 
-using digit_generator = basic_password_generator<[]() noexcept {
-    return std::string_view("0123456789");
-}>;
+using digit_generator = basic_password_generator<
+    []() noexcept { return std::string_view("0123456789"); }
+>;
 
-using symbol_generator = basic_password_generator<[]() noexcept {
-    return std::string_view("!@#$%^&*_+");
-}>;
+using symbol_generator = basic_password_generator<
+    []() noexcept { return std::string_view("!@#$%^&*_+"); }
+>;
 
-using upper_letter_generator = basic_password_generator<[]() noexcept {
-    return std::string_view("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-}>;
+using upper_letter_generator = basic_password_generator<
+    []() noexcept { return std::string_view("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); }
+>;
 
-using lower_letter_generator = basic_password_generator<[]() noexcept {
-    return std::string_view("abcdefghijklmnopqrstuvwxyz");
-}>;
+using lower_letter_generator = basic_password_generator<
+    []() noexcept { return std::string_view("abcdefghijklmnopqrstuvwxyz"); }
+>;
 
 void test0() {
     composite_password_generator generator;

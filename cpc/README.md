@@ -104,7 +104,7 @@ __並行処理__
 __デザインパターン__
 |[chg067.cxx](src/chg067.cxx)|パスワードの検証|Decorator pattern。
 |[chg068.cxx](src/chg068.cxx)|パスワード生成|Composite pattern。非型template に string_view は渡せないが、lambda を渡せば意図を汲める事に気づいた。
-|[chg069.cxx](src/chg069.cxx)|
+|[chg069.cxx](src/chg069.cxx)|社会保障番号生成|Template method pattern. 基底クラスポインタのコンテナの代わりに、lambda を std::function にしておけば、CRTP でも実装可能だと気がついた。
 |[chg070.cxx](src/chg070.cxx)|
 |[chg071.cxx](src/chg071.cxx)|
 |[chg072.cxx](src/chg072.cxx)|
