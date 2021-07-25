@@ -1,5 +1,6 @@
 #include <cctype>
 #include <algorithm>
+#include <ranges>
 
 #include "challenge.h"
 

@@ -1,6 +1,7 @@
 #include <random>
 #include <string_view>
 #include <iomanip>
+#include <ranges>
 
 #include "challenge.h"
 // イタチアルゴリズム

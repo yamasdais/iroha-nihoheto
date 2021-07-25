@@ -1,6 +1,7 @@
 #include <regex>
 #include <algorithm>
 #include <concepts>
+#include <ranges>
 
 #include "challenge.h"
 #include "coro_util.h"

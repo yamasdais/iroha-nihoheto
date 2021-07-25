@@ -54,7 +54,7 @@ else()
 endif()
 
 find_package(Threads REQUIRED)
-find_package(Boost REQUIRED filesystem)
+find_package(Boost COMPONENTS filesystem system REQUIRED)
 make_execs()
 
 if(Boost_FOUND)

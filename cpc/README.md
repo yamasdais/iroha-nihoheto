@@ -24,6 +24,10 @@ make VERBOSE=1
 
 module については g++ もまだ未対応なので、現時点では使わない。
 
+## Build
+
+gcc 11 + boost 1.74 (ubuntu 2021.04)
+
 ## Contents
 
 | File | Title | Note |
@@ -106,7 +110,7 @@ __デザインパターン__
 |[chg068.cxx](src/chg068.cxx)|パスワード生成|Composite pattern。非型template に string_view は渡せないが、lambda を渡せば意図を汲める事に気づいた。
 |[chg069.cxx](src/chg069.cxx)|社会保障番号生成|Template method pattern. 基底クラスポインタのコンテナの代わりに、lambda を std::function にしておけば、CRTP でも実装可能だと気がついた。
 |[chg070.cxx](src/chg070.cxx)|承認処理|Chain of Responsibility pattern. std::function は class template を纏めて扱う場面で有効と云えそうだ。
-|[chg071.cxx](src/chg071.cxx)|
+|[chg071.cxx](src/chg071.cxx)|Observer pattern. std::vector を継承させる。
 |[chg072.cxx](src/chg072.cxx)|
 |[chg073.cxx](src/chg073.cxx)|
 |[chg074.cxx](src/chg074.cxx)|

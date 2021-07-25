@@ -12,6 +12,7 @@
 #include <iostream>
 #include <chrono>
 #include <tuple>
+#include <optional>
 
 namespace challenge100 {
 

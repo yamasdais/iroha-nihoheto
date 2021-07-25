@@ -19,7 +19,7 @@ struct expense {
 };
 
 template <class Role>
-std::function<bool(double)> make_approvable_predicate() {
+constexpr std::function<bool(double)> make_approvable_predicate() {
     return [](double amount) noexcept {
         return Role{}.can_approve(amount);
     };
