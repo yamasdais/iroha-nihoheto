@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <ranges>
 
 namespace challenge100 {
     enum class container_action {
@@ -117,14 +118,19 @@ namespace challenge100 {
         }
 
         void add_observer(std::weak_ptr<container_observer> o) {
-            observers.push_back(std::move(o));
+            auto found = std::ranges::find_if(observers, [p=o.lock()](auto const& cur){
+                return p == cur;
+            }, &decltype(o)::lock);
+            if (found == std::ranges::end(observers)) {
+                observers.push_back(std::move(o));
+            }
         }
         void remove_observer(std::weak_ptr<container_observer> o) {
-            auto targ = std::find_if(std::begin(observers), std::end(observers), [p=std::move(o)](auto const& cur) {
-                return p.lock() == cur.lock();
-            });
-            if (targ != std::end(observers)) {
-                observers.erase(targ);
+            auto found = std::ranges::find_if(observers, [p=o.lock()](auto const& cur){
+                return p == cur;
+            }, &decltype(o)::lock);
+            if (found != std::ranges::end(observers)) {
+                observers.erase(found);
             }
         }
     };
