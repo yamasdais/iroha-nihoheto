@@ -17,6 +17,7 @@ set(coroutine_required chgtest;chg024;chg025;chg026;chg027;chg029;chg037;chg048;
 set(libprocps_required chg033)
 set(boost_fs_required chg034)
 set(pthread_required chg047;chg061;chg062;chg063;chg064;chg065;chg066)
+set(xercesc_required chg073)
 
 find_package(Threads REQUIRED)
 
@@ -56,6 +57,7 @@ endif()
 
 find_package(Threads REQUIRED)
 find_package(Boost COMPONENTS filesystem system REQUIRED)
+find_package(XercesC REQUIRED)
 make_execs()
 
 if(Boost_FOUND)
@@ -80,6 +82,11 @@ endif()
 foreach (pthread_targ IN LISTS pthread_required)
     target_link_libraries(${pthread_targ} Threads::Threads)
 endforeach()
+
+foreach(xerces_targ IN LISTS xercesc_required)
+    target_link_libraries(${xerces_targ} XercesC::XercesC)
+endforeach(xerces_targ IN LISTS xercesc_required)
+
 
 #add_executable(chg001 chg001.cxx)
 #if(CMAKE_COMPILER_IS_GNUCXX)

@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <memory>
 #include <ranges>
@@ -117,11 +118,15 @@ namespace challenge100 {
             return data.empty();
         }
 
-        void add_observer(std::weak_ptr<container_observer> o) {
+        [[nodiscard]]
+        bool contains(std::weak_ptr<container_observer> const& o) {
             auto found = std::ranges::find_if(observers, [p=o.lock()](auto const& cur){
                 return p == cur;
-            }, &decltype(o)::lock);
-            if (found == std::ranges::end(observers)) {
+            }, &std::weak_ptr<container_observer>::lock);
+            return found != std::ranges::end(observers);
+        }
+        void add_observer(std::weak_ptr<container_observer> o) {
+            if (!contains(o)) {
                 observers.push_back(std::move(o));
             }
         }
