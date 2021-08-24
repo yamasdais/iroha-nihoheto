@@ -111,10 +111,10 @@ __デザインパターン__
 |[chg069.cxx](src/chg069.cxx)|社会保障番号生成|Template method pattern. 基底クラスポインタのコンテナの代わりに、lambda を std::function にしておけば、CRTP でも実装可能だと気がついた。
 |[chg070.cxx](src/chg070.cxx)|承認処理|Chain of Responsibility pattern. std::function は class template を纏めて扱う場面で有効と云えそうだ。
 |[chg071.cxx](src/chg071.cxx)|Observer pattern|weak_ptr の使用例。[obsevable_vector.h](include/observable_vector.h) で実装
-|[chg072.cxx](src/chg072.cxx)|Strategy pattern|C++20 ぽくする努力を加えたい所
+|[chg072.cxx](src/chg072.cxx)|Strategy pattern|nullptr で判定するのではなくて、unique_ptr 辺り使いたい所。さらに C++20 ぽくする努力を加えたい所
 __データシリアライゼーション__
-|[chg073.cxx](src/chg073.cxx)|XML DOM|Xerces を使ってみる
-|[chg074.cxx](src/chg074.cxx)|
+|[chg073.cxx](src/chg073.cxx)|XML DOM|Xerces を使ってみる。素で使うとかなりゴチャゴチャするが、xerces の基礎は分かるソース。課題: XML schema 対応、ranges や generator が使える様にしたい所。
+|[chg074.cxx](src/chg074.cxx)|XPath|Xerces + XPath
 |[chg075.cxx](src/chg075.cxx)|
 |[chg076.cxx](src/chg076.cxx)|
 |[chg077.cxx](src/chg077.cxx)|
