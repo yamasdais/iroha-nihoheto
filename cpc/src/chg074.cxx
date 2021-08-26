@@ -102,7 +102,6 @@ void loadMovieData() {
             xsl::XercesDOMSupport domSupport{parserLiaison};
             xsl::XercesDOMWrapperParsedSource parsedSource{doc, parserLiaison, domSupport};
             auto xslDoc = parsedSource.getDocument();
-            auto root = xslDoc->getDocumentElement();
             xsl::XPathEvaluator evaluator;
             xsl::XalanDocumentPrefixResolver prefResolver{xslDoc};
             auto ctx = evaluator.selectSingleNode(domSupport, xslDoc, xsl::XalanDOMString("/").c_str(), prefResolver);

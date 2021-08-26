@@ -17,6 +17,7 @@
 #include <xercesc/framework/LocalFileFormatTarget.hpp>
 
 #include "challenge.h"
+#include "movie_data.h"
 
 XERCES_CPP_NAMESPACE_USE
 
@@ -94,41 +95,6 @@ struct ParserErrorHandler : public xml::ErrorHandler {
     }
 };
 
-struct casting_role {
-    std::string actor;
-    std::string role;
-};
-
-struct movie {
-    unsigned int id;
-    std::string title;
-    int year;
-    unsigned int length;
-
-    std::vector<casting_role> cast;
-    std::vector<std::string> directors;
-    std::vector<std::string> writers;
-
-    void print() const {
-        std::cout << id << ", " << title << ", " << year << ", " << length << "min" << "\n";
-        std::cout << "actors: " << "\n";
-        for (auto const& c : cast) {
-            std::cout << c.role << ": " << c.actor << "\n";
-        }
-        std::cout << "directors: ";
-        for (auto const& d : directors) {
-            std::cout << d << ",";
-        }
-        std::cout << "\nwriters: ";
-        for (auto const& w : writers) {
-            std::cout << w << ",";
-        }
-        std::cout << std::endl;
-    }
-};
-
-using movie_list = std::vector<movie>;
-
 struct implDeletor {
     void operator()(xml::DOMImplementation*) {
         // do nothing on application code
@@ -159,7 +125,7 @@ void serializeXml(std::unique_ptr<xml::DOMDocument> const& document , std::strin
     }
 }
 
-void serializeMovies(movie_list const& movies, std::string_view filepath) {
+void serializeMovies(cpc::movie_list const& movies, std::string_view filepath) {
     auto xmlImpl = xml::DOMImplementationRegistry::getDOMImplementation(ChToXCh{"Core"});
     if (!xmlImpl) {
         std::cerr << "Cannot get DOM(Core) implementation" << std::endl;
@@ -231,14 +197,14 @@ struct resRelease {
         ptr->release();
     }
 };
-movie_list deserialize(std::string_view filepath) {
+cpc::movie_list deserialize(std::string_view filepath) {
     auto xmlImpl = xml::DOMImplementationRegistry::getDOMImplementation(ChToXCh{"LS"});
     auto parser = std::unique_ptr<xml::DOMLSParser, resRelease>(((xml::DOMImplementationLS*)xmlImpl)->createLSParser(DOMImplementationLS::MODE_SYNCHRONOUS, 0));
     DefaultErrorHandler handler;
     if (parser->getDomConfig()->canSetParameter(xml::XMLUni::fgDOMValidate, false))
         parser->getDomConfig()->setParameter(xml::XMLUni::fgDOMValidate, false);
     parser->getDomConfig()->setParameter(xml::XMLUni::fgDOMErrorHandler, &handler);
-    movie_list ret;
+    cpc::movie_list ret;
 
     try {
         char const* furi = filepath.data();
@@ -266,7 +232,7 @@ movie_list deserialize(std::string_view filepath) {
                         std::cerr << "error, cannot convert to int value error: "  << lengthval << std::endl;
                     }
 
-                    std::vector<casting_role> rolesData;
+                    std::vector<cpc::casting_role> rolesData;
                     auto casts = ((xml::DOMElement*)mov)->getElementsByTagName(ChToXCh{"cast"});
                     auto cast = (xml::DOMElement*)casts->item(0);
                     auto roles = cast->getElementsByTagName(ChToXCh{"role"});
@@ -275,7 +241,7 @@ movie_list deserialize(std::string_view filepath) {
                         auto roleAttr = role->getAttributes();
                         auto actor = std::string(XChToCh{roleAttr->getNamedItem(ChToXCh{"star"})->getNodeValue()});
                         auto name = std::string(XChToCh{roleAttr->getNamedItem(ChToXCh{"name"})->getNodeValue()});
-                        rolesData.emplace_back(casting_role{actor, name});
+                        rolesData.emplace_back(cpc::casting_role{actor, name});
                     }
                     std::vector<std::string> directorsData;
                     auto directors = static_cast<xml::DOMElement*>(((xml::DOMElement*)mov)->getElementsByTagName(ChToXCh{"directors"})->item(0));
@@ -295,7 +261,7 @@ movie_list deserialize(std::string_view filepath) {
                         auto name = std::string(XChToCh{writerAttr->getNamedItem(ChToXCh{"name"})->getNodeValue()});
                         writersData.emplace_back(name);
                     }
-                    ret.emplace_back(movie{ id, titleval, year, length, rolesData, directorsData, writersData});
+                    ret.emplace_back(cpc::movie{ id, titleval, year, length, rolesData, directorsData, writersData});
                 }
             }
         }
@@ -313,32 +279,10 @@ movie_list deserialize(std::string_view filepath) {
 }
 
 void test0() { 
-    movie_list const movies {
-        {
-            11001, "The Matrix", 1999, 196,
-            {
-                { "Keanu Reeves", "Neo" },
-                { "Laurence Fishburne", "Morpheus" },
-                { "Carrie-Anne Moss", "Trinity" },
-                { "Hugo Weaving", "Agent Smith" }
-            },
-            { "Lana Wachowski", "Lilly Wachowski" },
-            { "Lana Wachowski", "Lilly Wachowski" },
-        }, {
-            9871, "Forrest Gump", 1994, 202,
-            {
-                { "Tom Hanks", "Forrest Gump" },
-                { "Sally Field", "Mrs. Gump" },
-                { "Robin Wright", "Jenny Curran" },
-                { "Mykelti Williamson", "Bubba Blue" },
-            },
-            { "Robert Zemeckis" },
-            { "inston Groom", "Eric Roth" },
-        },
-    };
     try {
         xml::XMLPlatformUtils::Initialize();
 
+        //auto movies = cpc::make_movie_list();
         //serializeMovies(movies, "../data/movies.xml");
 
         auto des = deserialize("movies.xml");
