@@ -114,7 +114,7 @@ __デザインパターン__
 |[chg072.cxx](src/chg072.cxx)|Strategy pattern|nullptr で判定するのではなくて、unique_ptr 辺り使いたい所。さらに C++20 ぽくする努力を加えたい所
 __データシリアライゼーション__
 |[chg073.cxx](src/chg073.cxx)|XML DOM|Xerces を使ってみる。素で使うとかなりゴチャゴチャするが、xerces の基礎は分かるソース。課題: XML schema 対応、ranges や generator が使える様にしたい所。
-|[chg074.cxx](src/chg074.cxx)|XPath|Xerces + XPath
+|[chg074.cxx](src/chg074.cxx)|XPath|Xerces の XPath は Level1 で要件を満たさなかったので Xalan も利用するようにしてみた。これも素の使い方だとキツい。
 |[chg075.cxx](src/chg075.cxx)|
 |[chg076.cxx](src/chg076.cxx)|
 |[chg077.cxx](src/chg077.cxx)|
