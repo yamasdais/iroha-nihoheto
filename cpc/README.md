@@ -115,7 +115,7 @@ __デザインパターン__
 __データシリアライゼーション__
 |[chg073.cxx](src/chg073.cxx)|XML DOM|Xerces を使ってみる。素で使うとかなりゴチャゴチャするが、xerces の基礎は分かるソース。課題: XML schema 対応、ranges や generator が使える様にしたい所。
 |[chg074.cxx](src/chg074.cxx)|XPath|Xerces の XPath は Level1 で要件を満たさなかったので Xalan も利用するようにしてみた。これも素の使い方だとキツい。
-|[chg075.cxx](src/chg075.cxx)|JSON|nlohmann JSON ライブラリは ubuntu のパッケージになってた
+|[chg075.cxx](src/chg075.cxx)|JSON|nlohmann JSON ライブラリは ubuntu のパッケージになってた。カスタムシリアライザを定義できる
 |[chg076.cxx](src/chg076.cxx)|
 |[chg077.cxx](src/chg077.cxx)|
 |[chg078.cxx](src/chg078.cxx)|
