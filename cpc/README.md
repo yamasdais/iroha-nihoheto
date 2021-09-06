@@ -116,13 +116,14 @@ __データシリアライゼーション__
 |[chg073.cxx](src/chg073.cxx)|XML DOM|Xerces を使ってみる。素で使うとかなりゴチャゴチャするが、xerces の基礎は分かるソース。課題: XML schema 対応、ranges や generator が使える様にしたい所。
 |[chg074.cxx](src/chg074.cxx)|XPath|Xerces の XPath は Level1 で要件を満たさなかったので Xalan も利用するようにしてみた。これも素の使い方だとキツい。
 |[chg075.cxx](src/chg075.cxx)|JSON|nlohmann JSON ライブラリは ubuntu のパッケージになってた。カスタムシリアライザを定義できる
-|[chg076.cxx](src/chg076.cxx)|
-|[chg077.cxx](src/chg077.cxx)|
-|[chg078.cxx](src/chg078.cxx)|
-|[chg079.cxx](src/chg079.cxx)|
-|[chg080.cxx](src/chg080.cxx)|
-|[chg081.cxx](src/chg081.cxx)|
-|[chg082.cxx](src/chg082.cxx)|
+|[chg076.cxx](src/chg076.cxx)|JSON deserialize|nlohmann JSON 非常に使いやすい
+|[chg077.cxx](src/chg077.cxx)|PDF その2|lib が上手くリンクできないので、後回し
+|[chg078.cxx](src/chg078.cxx)|PDF その1|lib が上手くリンクできないので、後回し
+__アーカイヴ・画像・データベース__
+|[chg079.cxx](src/chg079.cxx)|zip|リンクできない
+|[chg080.cxx](src/chg080.cxx)|zip|リンクできない
+|[chg081.cxx](src/chg081.cxx)|zip|リンクできない
+|[chg082.cxx](src/chg082.cxx)|png lib|
 |[chg083.cxx](src/chg083.cxx)|
 |[chg084.cxx](src/chg084.cxx)|
 |[chg085.cxx](src/chg085.cxx)|

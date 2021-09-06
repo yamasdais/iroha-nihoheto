@@ -19,6 +19,7 @@ set(boost_fs_required chg034)
 set(pthread_required chg047;chg061;chg062;chg063;chg064;chg065;chg066)
 set(xercesc_required chg073;chg074)
 set(xalanc_required chg074)
+set(png_required chg082)
 
 find_package(Threads REQUIRED)
 
@@ -60,6 +61,8 @@ find_package(Threads REQUIRED)
 find_package(Boost COMPONENTS filesystem system REQUIRED)
 find_package(XercesC REQUIRED)
 find_package(XalanC REQUIRED)
+find_package(PNG REQUIRED)
+
 make_execs()
 
 if(Boost_FOUND)
@@ -91,6 +94,10 @@ endforeach()
 
 foreach(xalan_targ IN LISTS xalanc_required)
     target_link_libraries(${xalan_targ} XalanC::XalanC)
+endforeach()
+
+foreach(png_targ IN LISTS png_required)
+    target_link_libraries(${png_targ} PNG::PNG)
 endforeach()
 
 #add_executable(chg001 chg001.cxx)
