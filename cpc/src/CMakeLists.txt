@@ -19,7 +19,7 @@ set(boost_fs_required chg034)
 set(pthread_required chg047;chg061;chg062;chg063;chg064;chg065;chg066)
 set(xercesc_required chg073;chg074)
 set(xalanc_required chg074)
-set(png_required chg082)
+set(png_required chg082;chg084)
 
 find_package(Threads REQUIRED)
 
@@ -62,6 +62,7 @@ find_package(Boost COMPONENTS filesystem system REQUIRED)
 find_package(XercesC REQUIRED)
 find_package(XalanC REQUIRED)
 find_package(PNG REQUIRED)
+find_package(SQLite3 REQUIRED)
 
 make_execs()
 
