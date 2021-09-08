@@ -126,7 +126,7 @@ __アーカイヴ・画像・データベース__
 |[chg082.cxx](src/chg082.cxx)|png lib|これは libpng++ で事足りた。
 |[chg083.cxx](src/chg083.cxx)|png|png で文字や線を描画する際の font ライブラリがリンクできない
 |[chg084.cxx](src/chg084.cxx)|バーコード画像出力|文字の画像化が要らなかったので、libpng++ だけで間に合った
-|[chg085.cxx](src/chg085.cxx)|
+|[chg085.cxx](src/chg085.cxx)|sqlite データベース|DBファイル接続、select できた
 |[chg086.cxx](src/chg086.cxx)|
 |[chg087.cxx](src/chg087.cxx)|
 |[chg088.cxx](src/chg088.cxx)|

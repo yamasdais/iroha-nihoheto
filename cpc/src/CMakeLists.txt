@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(LOCPRIV_INCDIR $ENV{HOME}/imported/include)
 
 find_package(PkgConfig REQUIRED)
 include(FindPkgConfig)
@@ -20,6 +21,7 @@ set(pthread_required chg047;chg061;chg062;chg063;chg064;chg065;chg066)
 set(xercesc_required chg073;chg074)
 set(xalanc_required chg074)
 set(png_required chg082;chg084)
+set(sqlite_required chg085)
 
 find_package(Threads REQUIRED)
 
@@ -97,8 +99,14 @@ foreach(xalan_targ IN LISTS xalanc_required)
     target_link_libraries(${xalan_targ} XalanC::XalanC)
 endforeach()
 
-foreach(png_targ IN LISTS png_required)
-    target_link_libraries(${png_targ} PNG::PNG)
+foreach(targ IN LISTS png_required)
+    target_link_libraries(${targ} PNG::PNG)
+endforeach()
+
+foreach(targ IN LISTS sqlite_required)
+    target_link_libraries(${targ} PRIVATE -lsqlite3)
+    target_include_directories(${targ} PUBLIC "$<BUILD_INTERFACE:${LOCPRIV_INCDIR}>") 
+    message("INCLUDE: " ${LOCPRIV_INCDIR})
 endforeach()
 
 #add_executable(chg001 chg001.cxx)
