@@ -131,7 +131,7 @@ __アーカイヴ・画像・データベース__
 |[chg087.cxx](src/chg087.cxx)|media ファイルのストア|blob を使う方法
 __暗号__
 |[chg088.cxx](src/chg088.cxx)|シーザー暗号|accum を使って実装
-|[chg089.cxx](src/chg089.cxx)|
+|[chg089.cxx](src/chg089.cxx)|ヴィジュネル暗号|シーザー暗号の拡張
 |[chg090.cxx](src/chg090.cxx)|
 |[chg091.cxx](src/chg091.cxx)|
 |[chg092.cxx](src/chg092.cxx)|
