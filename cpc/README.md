@@ -128,8 +128,9 @@ __アーカイヴ・画像・データベース__
 |[chg084.cxx](src/chg084.cxx)|バーコード画像出力|文字の画像化が要らなかったので、libpng++ だけで間に合った
 |[chg085.cxx](src/chg085.cxx)|sqlite データベース|DBファイル接続、select できた
 |[chg086.cxx](src/chg086.cxx)|transactionありの insert|標準入出力でデータを入れるのは好きではないので JSON ファイルを読み込む方式
-|[chg087.cxx](src/chg087.cxx)|
-|[chg088.cxx](src/chg088.cxx)|
+|[chg087.cxx](src/chg087.cxx)|media ファイルのストア|blob を使う方法
+__暗号__
+|[chg088.cxx](src/chg088.cxx)|シーザー暗号|accum を使って実装
 |[chg089.cxx](src/chg089.cxx)|
 |[chg090.cxx](src/chg090.cxx)|
 |[chg091.cxx](src/chg091.cxx)|
