@@ -42,7 +42,16 @@ struct movie {
     }
 };
 
+struct media {
+    uint32_t id;
+    uint32_t movie_id;
+    std::string name;
+    std::optional<std::string> description;
+    std::vector<char> blob;
+};
+
 using movie_list = std::vector<movie>;
+using media_list = std::vector<media>;
 
 movie_list const make_movie_list() {
     return movie_list{
