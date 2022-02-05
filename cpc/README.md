@@ -134,7 +134,7 @@ __暗号__
 |[chg089.cxx](src/chg089.cxx)|ヴィジュネル暗号|シーザー暗号の拡張
 |[chg090.cxx](src/chg090.cxx)|base64|スクラッチ
 |[chg091.cxx](src/chg091.cxx)|password チェック|sha512 ハッシュの計算
-|[chg092.cxx](src/chg092.cxx)|
+|[chg092.cxx](src/chg092.cxx)|ファイルのハッシュ値|sha, md5 など
 |[chg093.cxx](src/chg093.cxx)|
 |[chg094.cxx](src/chg094.cxx)|
 |[chg095.cxx](src/chg095.cxx)|
