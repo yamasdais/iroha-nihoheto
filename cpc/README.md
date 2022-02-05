@@ -132,8 +132,8 @@ __アーカイヴ・画像・データベース__
 __暗号__
 |[chg088.cxx](src/chg088.cxx)|シーザー暗号|accum を使って実装
 |[chg089.cxx](src/chg089.cxx)|ヴィジュネル暗号|シーザー暗号の拡張
-|[chg090.cxx](src/chg090.cxx)|base64|
-|[chg091.cxx](src/chg091.cxx)|
+|[chg090.cxx](src/chg090.cxx)|base64|スクラッチ
+|[chg091.cxx](src/chg091.cxx)|password チェック|sha512 ハッシュの計算
 |[chg092.cxx](src/chg092.cxx)|
 |[chg093.cxx](src/chg093.cxx)|
 |[chg094.cxx](src/chg094.cxx)|

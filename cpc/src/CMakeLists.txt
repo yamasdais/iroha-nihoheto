@@ -22,6 +22,7 @@ set(xercesc_required chg073;chg074)
 set(xalanc_required chg074)
 set(png_required chg082;chg084)
 set(sqlite_required chg085;chg086;chg087)
+set(crypto_required chg091)
 
 find_package(Threads REQUIRED)
 
@@ -107,6 +108,10 @@ foreach(targ IN LISTS sqlite_required)
     target_link_libraries(${targ} PRIVATE -lsqlite3)
     target_include_directories(${targ} PUBLIC "$<BUILD_INTERFACE:${LOCPRIV_INCDIR}>") 
     message("INCLUDE: " ${LOCPRIV_INCDIR})
+endforeach()
+
+foreach(targ IN LISTS crypto_required)
+    target_link_libraries(${targ} PRIVATE -lcrypto++)
 endforeach()
 
 #add_executable(chg001 chg001.cxx)
