@@ -19,6 +19,9 @@ std::string compute_hash(fs::path const& filepath) {
     std::string digest;
     HashType hash;
 
+    // new したオブジェクトを直接渡しているので、メモリリークが心配になるが、
+    // Crypto++ は所有権を呼び出し先に委譲する設計が多いのでこれで良い。
+    // https://www.cryptopp.com/wiki/FileSource
     CryptoPP::FileSource src(
         filepath.c_str(), true, new CryptoPP::HashFilter(hash,
                     new CryptoPP::HexEncoder(new CryptoPP::StringSink(digest)))
