@@ -136,7 +136,7 @@ __暗号__
 |[chg091.cxx](src/chg091.cxx)|password チェック|sha512 ハッシュの計算
 |[chg092.cxx](src/chg092.cxx)|ファイルのハッシュ値|sha, md5 など
 |[chg093.cxx](src/chg093.cxx)|ファイルの暗号化・復号化|AES 暗号、sha256 ハッシュ
-|[chg094.cxx](src/chg094.cxx)|
+|[chg094.cxx](src/chg094.cxx)|ファイルへの署名|RSA 公開鍵・秘密鍵方式の署名
 |[chg095.cxx](src/chg095.cxx)|
 |[chg096.cxx](src/chg096.cxx)|
 |[chg097.cxx](src/chg097.cxx)|

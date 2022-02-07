@@ -22,7 +22,7 @@ set(xercesc_required chg073;chg074)
 set(xalanc_required chg074)
 set(png_required chg082;chg084)
 set(sqlite_required chg085;chg086;chg087)
-set(crypto_required chg091;chg092;chg093)
+set(crypto_required chg091;chg092;chg093;chg094)
 
 find_package(Threads REQUIRED)
 
