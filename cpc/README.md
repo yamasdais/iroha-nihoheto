@@ -137,8 +137,9 @@ __暗号__
 |[chg092.cxx](src/chg092.cxx)|ファイルのハッシュ値|sha, md5 など
 |[chg093.cxx](src/chg093.cxx)|ファイルの暗号化・復号化|AES 暗号、sha256 ハッシュ
 |[chg094.cxx](src/chg094.cxx)|ファイルへの署名|RSA 公開鍵・秘密鍵方式の署名
-|[chg095.cxx](src/chg095.cxx)|
-|[chg096.cxx](src/chg096.cxx)|
+__ネットワークとサービス__
+|[chg095.cxx](src/chg095.cxx)|ホスト名取得|boost::asio
+|[chg096_srv.cxx](src/chg096_srv.cxx)<br/>[chg096_cli.cxx](src/chg096_cli.cxx)|server-client fizz-buzz|boost::asio のサンプル
 |[chg097.cxx](src/chg097.cxx)|
 |[chg098.cxx](src/chg098.cxx)|
 |[chg099.cxx](src/chg099.cxx)|
