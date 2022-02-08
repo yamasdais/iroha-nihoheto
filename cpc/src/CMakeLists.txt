@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(LOCPRIV_INCDIR $ENV{HOME}/imported/include)
+set(LOCPRIV_LIBDIR $ENV{HOME}/imported/lib)
 
 find_package(PkgConfig REQUIRED)
 include(FindPkgConfig)
@@ -23,6 +24,7 @@ set(xalanc_required chg074)
 set(png_required chg082;chg084)
 set(sqlite_required chg085;chg086;chg087)
 set(crypto_required chg091;chg092;chg093;chg094)
+set(curl_required chg097)
 
 find_package(Threads REQUIRED)
 
@@ -66,6 +68,7 @@ find_package(XercesC REQUIRED)
 find_package(XalanC REQUIRED)
 find_package(PNG REQUIRED)
 find_package(SQLite3 REQUIRED)
+find_package(CURL REQUIRED)
 
 make_execs()
 
@@ -112,6 +115,12 @@ endforeach()
 
 foreach(targ IN LISTS crypto_required)
     target_link_libraries(${targ} PRIVATE -lcrypto++)
+endforeach()
+
+foreach(targ IN LISTS curl_required)
+    target_link_libraries(${targ} ${CURL_LIBRARIES} -lcurlcpp)
+    target_link_directories(${targ} PUBLIC "$<BUILD_INTERFACE:${LOCPRIV_LIBDIR}>")
+    target_include_directories(${targ} PUBLIC "$<BUILD_INTERFACE:${LOCPRIV_INCDIR}>") 
 endforeach()
 
 #add_executable(chg001 chg001.cxx)
