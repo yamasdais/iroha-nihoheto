@@ -140,7 +140,7 @@ __暗号__
 __ネットワークとサービス__
 |[chg095.cxx](src/chg095.cxx)|ホスト名取得|boost::asio
 |[chg096_srv.cxx](src/chg096_srv.cxx)<br/>[chg096_cli.cxx](src/chg096_cli.cxx)|server-client fizz-buzz|boost::asio のサンプル
-|[chg097.cxx](src/chg097.cxx)|
-|[chg098.cxx](src/chg098.cxx)|
+|[chg097.cxx](src/chg097.cxx)|Bitcoin 交換レート取得|curl を使った API 利用
+|[chg098.cxx](src/chg098.cxx)|IMAP クライアント|curl を使って IMAP 接続。接続は拒否される模様。
 |[chg099.cxx](src/chg099.cxx)|
 |[chg100.cxx](src/chg100.cxx)|
