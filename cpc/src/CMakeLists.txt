@@ -24,7 +24,7 @@ set(xalanc_required chg074)
 set(png_required chg082;chg084)
 set(sqlite_required chg085;chg086;chg087)
 set(crypto_required chg091;chg092;chg093;chg094)
-set(curl_required chg097;chg098)
+set(curl_required chg097;chg098;chg099)
 
 find_package(Threads REQUIRED)
 
