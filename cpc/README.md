@@ -143,4 +143,4 @@ __ネットワークとサービス__
 |[chg097.cxx](src/chg097.cxx)|Bitcoin 交換レート取得|curl を使った API 利用
 |[chg098.cxx](src/chg098.cxx)|IMAP クライアント|curl を使って IMAP 接続。接続は拒否される模様。
 |[chg099.cxx](src/chg099.cxx)|翻訳サービス|DeepL にリクエストを投げる
-|[chg100.cxx](src/chg100.cxx)|
+|[chg100.cxx](src/chg100.cxx)|画像内の顔を認識|Azure Face API を使った。data ディレクトリに chg100.key ファイルを置く。一行目は endpoint、二行目は subscription key
