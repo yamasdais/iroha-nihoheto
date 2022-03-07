@@ -266,3 +266,7 @@ __pycache__/
 .ipynb_checkpoints/
 
 .vscode/
+
+html/highlight/
+html/selList.txt
+html/styleLinks.txt
