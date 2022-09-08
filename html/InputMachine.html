@@ -392,6 +392,7 @@ p.prefRow {
 
         </style>
         <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
         <script id="highlightWorker" language="javascript" type="javascript/worker">
 importScripts("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js");
 onmessage = e => {
@@ -401,17 +402,30 @@ onmessage = e => {
 };
         </script>
         <script>
+function getObjectWithInitValue(name, mutator) {
+    var ret = document.getElementById(name)
+    mutator(ret, localStorage.getItem(name));
+    return ret;
+}
+function storeObjectValue(name, value) {
+    var obj = document.getElementById(name);
+    localStorage.setItem(name, value);
+}
 window.addEventListener("load", function() {
     const inputArea = document.getElementById("inputArea");
     const highlightArea = document.getElementById("highlightArea");
     const displayButton = document.getElementById("displayButton");
-    const languageText = document.getElementById("specificLanguage");
+    //const languageText = document.getElementById("specificLanguage");
+    const languageText = getObjectWithInitValue("specificLanguage", (x, v) => x.value = v);
+    const fontSize = document.getElementById("fontSize");
+    viewer = document.getElementById("highlightArea");
 
     // Refresh button
     document.getElementById("refreshButton").addEventListener("click", obj => {
         inputArea.select();
         languageText.value = "";
         languageText.dispatchEvent(new Event("change"));
+        highlightArea.innerHTML = "";
     })
 
     // Ready button
@@ -426,8 +440,24 @@ window.addEventListener("load", function() {
                 languageText.dispatchEvent(new Event("change"));
                 return h;
             };
+        storeObjectValue("input", lang);
         const html = hilighter();
         highlightArea.innerHTML = html.value;
+        viewer.style.fontFamily = "源ノ角ゴシック Code JP";
+        if (fontSize.value) {
+            viewer.style.fontSize = `${fontSize.value}px`
+        }
+    });
+    // PNG button
+    document.getElementById("genPngButton").addEventListener("click", obj => {
+        html2canvas(highlightArea).then(function(canvas) {
+            var link = document.getElementById("downloader");
+            link.href = canvas.toDataURL("image/png");
+            link.download = "highlight.png";
+            link.target = '_blank';
+            link.click();
+        })
+
     });
 
     // Go button
@@ -458,7 +488,7 @@ window.addEventListener("load", function() {
             wasError = true;
             alert(e.message)
         });
-        highlightArea.style.minHeight = highlightArea.clientHeight + "px";
+        //highlightArea.style.minHeight = highlightArea.clientHeight + "px";
         highlightArea.innerHTML = "";
         durationResult.value = "";
         let i = prev = 0;
@@ -509,8 +539,6 @@ window.addEventListener("load", function() {
             }
         })
     })
-    viewer = document.getElementById("highlightArea");
-    viewer.style.fontFamily = "HackGen Console";
 });
         </script>
     </head>
@@ -528,10 +556,15 @@ window.addEventListener("load", function() {
                         <button id="refreshButton" style="margin-right: 12px">Refresh</button>
                         <button id="prepareButton">Ready</button>
                         <button id="displayButton" disabled>Go</button>
+                        <button id="genPngButton">PNG</button>
                     </div>
                     <div class="prefRow">
                         <input id="specificLanguage" type="text">
                         <label for="specificLanguage">Language</label>
+                    </div>
+                    <div class="prefRow">
+                        <input id="fontSize" type="number">
+                        <label for="fontSize">Font Size</label>
                     </div>
                     <div class="prefRow">
                         <input id="targetDuration" type="range" min="1" max="10" value="3">
@@ -804,5 +837,6 @@ window.addEventListener("load", function() {
                 </div>
             </div>
         </div>
+        <a id="downloader" style="display: none;"></a>
     </body>
 </html>
