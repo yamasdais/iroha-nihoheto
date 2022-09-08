@@ -319,8 +319,11 @@ input {
     max-height: 20em;
 }
 
-p.prefRow {
+p.inprefRow {
     order: 3;
+    margin: 0px 4px 0px 2px;
+    width: 15%;
+    font-size: smaller;
 }
 .styles {
     flex: 1 1 50%;
@@ -402,9 +405,9 @@ onmessage = e => {
 };
         </script>
         <script>
-function getObjectWithInitValue(name, mutator) {
+function getObjectWithInitValue(name, mutator, defaultValue) {
     var ret = document.getElementById(name)
-    mutator(ret, localStorage.getItem(name));
+    mutator(ret, localStorage.getItem(name) ?? defaultValue);
     return ret;
 }
 function storeObjectValue(name, value) {
@@ -412,14 +415,75 @@ function storeObjectValue(name, value) {
     localStorage.setItem(name, value);
 }
 window.addEventListener("load", function() {
+    const setToValueProperty = (x, v) => x.value = v;
+    const changeStyle = function(newStyle) {
+        const current = document.querySelector(".styles .current");
+        const currentStyle = current.textContent;
+        if (currentStyle !== newStyle) {
+            document.querySelector(`link[title="${newStyle}"`)
+                .removeAttribute("disabled");
+            document.querySelector(`link[title="${currentStyle}"`)
+                .setAttribute("disabled", "disabled");
+
+            current.classList.remove("current");
+            nextItem = document.querySelector(`.styles li[title="${newStyle}"]`);
+            nextItem.classList.add("current");
+
+        }
+    }
+
     const inputArea = document.getElementById("inputArea");
     const highlightArea = document.getElementById("highlightArea");
     const displayButton = document.getElementById("displayButton");
     //const languageText = document.getElementById("specificLanguage");
-    const languageText = getObjectWithInitValue("specificLanguage", (x, v) => x.value = v);
-    const fontSize = document.getElementById("fontSize");
-    viewer = document.getElementById("highlightArea");
+    const languageText = getObjectWithInitValue("specificLanguage", setToValueProperty);
+    //const fontSize = document.getElementById("fontSize");
+    const viewerFontFamily = getObjectWithInitValue("viewerFontFamily", setToValueProperty, "源ノ角ゴシック Code JP");
+    const fontSize = getObjectWithInitValue("fontSize", setToValueProperty, 16);
+    //const targetDuration = document.getElementById("targetDuration");
+    const targetDuration = getObjectWithInitValue("targetDuration", setToValueProperty);
+    const fps = getObjectWithInitValue("fps", setToValueProperty);
+    const viewer = document.getElementById("highlightArea");
 
+    // language text input
+    languageText.addEventListener("change", obj => {
+        const isEmpty = !obj.target.value;
+        if (displayButton.disabled != isEmpty)
+            displayButton.disabled = isEmpty;
+    });
+    languageText.addEventListener("keyup", obj => {
+        languageText.dispatchEvent(new Event("change"));
+    });
+    languageText.dispatchEvent(new Event("change"));
+    
+    // font family
+    viewerFontFamily.addEventListener("change", obj => {
+        viewer.style.fontFamily = viewerFontFamily.value;
+    })
+    viewerFontFamily.dispatchEvent(new Event("change"));
+
+    // font size
+    fontSize.addEventListener("change", obj => {
+        if (!fontSize.value) {
+            fontSize.value = 16;
+        }
+        viewer.style.fontSize = `${fontSize.value}px`
+    })
+    fontSize.dispatchEvent(new Event("change"));
+
+    // target duration
+    targetDuration.addEventListener("input", obj => {
+        document.getElementById("targetDurationValue").innerHTML = `${targetDuration.value}ms`;
+    })
+    targetDuration.dispatchEvent(new Event("input"));
+
+    // fps
+    fps.addEventListener("input", obj => {
+        document.getElementById("fpsValue").innerHTML = fps.value;
+    })
+    fps.dispatchEvent(new Event("input"));
+
+    changeStyle(localStorage.getItem("selectedStyle") ?? "Default");
     // Refresh button
     document.getElementById("refreshButton").addEventListener("click", obj => {
         inputArea.select();
@@ -432,21 +496,24 @@ window.addEventListener("load", function() {
     document.getElementById("prepareButton").addEventListener("click", obj => {
         const text = inputArea.value;
         const lang = languageText.value;
+        storeObjectValue("specificLanguage", lang);
+        storeObjectValue("viewerFontFamily", viewerFontFamily.value);
+        storeObjectValue("fontSize", fontSize.value);
+        storeObjectValue("targetDuration", targetDuration.value);
+        storeObjectValue("fps", fps.value);
+        localStorage.setItem("selectedStyle", document.querySelector(".styles .current").textContent);
         const hilighter = lang
             ? () => hljs.highlight(text, { language: lang, ignoreIllegals: true })
             : () => {
                 const h = hljs.highlightAuto(text);
                 languageText.value = h.language ?? "";
+                storeObjectValue("specificLanguage", languageText.value);
                 languageText.dispatchEvent(new Event("change"));
                 return h;
             };
-        storeObjectValue("input", lang);
         const html = hilighter();
         highlightArea.innerHTML = html.value;
-        viewer.style.fontFamily = "源ノ角ゴシック Code JP";
-        if (fontSize.value) {
-            viewer.style.fontSize = `${fontSize.value}px`
-        }
+        //viewer.style.fontFamily = "源ノ角ゴシック Code JP";
     });
     // PNG button
     document.getElementById("genPngButton").addEventListener("click", obj => {
@@ -457,7 +524,6 @@ window.addEventListener("load", function() {
             link.target = '_blank';
             link.click();
         })
-
     });
 
     // Go button
@@ -469,10 +535,10 @@ window.addEventListener("load", function() {
             return;
         }
         const textCount = text.length;
-        const fps = parseFloat(document.getElementById("fps").value)
-        const duration = parseFloat(document.getElementById("targetDuration").value);
-        const incPerFrame = textCount / (fps * duration);
-        const frameMS = Math.min(1000 / fps, textCount / incPerFrame);
+        const fpsVal = parseFloat(fps.value)
+        const duration = parseFloat(targetDuration.value);
+        const incPerFrame = textCount / (fpsVal * duration / 1000);
+        const frameMS = Math.min(1000 / fpsVal, textCount / incPerFrame);
         const status = document.getElementById("status");
         const durationResult = document.getElementById("duration");
 
@@ -512,38 +578,32 @@ window.addEventListener("load", function() {
         }, frameMS);
     });
 
-    // language text input
-    languageText.addEventListener("change", obj => {
-        const isEmpty = !obj.target.value;
-        if (displayButton.disabled != isEmpty)
-            displayButton.disabled = isEmpty;
-    });
-    languageText.addEventListener("keyup", obj => {
-        languageText.dispatchEvent(new Event("change"));
-    });
-
+    // style list
     document.querySelectorAll(".styles li").forEach(elem => {
         elem.addEventListener("click", event => {
             event.preventDefault();
+            changeStyle(event.target.textContent);
+            /*
             const current = document.querySelector(".styles .current");
             const currentStyle = current.textContent;
             const nextStyle = event.target.textContent;
             if (currentStyle !== nextStyle) {
                 document.querySelector(`link[title="${nextStyle}"`)
-                .removeAttribute("disabled");
+                    .removeAttribute("disabled");
                 document.querySelector(`link[title="${currentStyle}"`)
-                .setAttribute("disabled", "disabled");
+                    .setAttribute("disabled", "disabled");
 
                 current.classList.remove("current");
                 event.target.classList.add("current");
             }
+            */
         })
     })
 });
         </script>
     </head>
     <body>
-        <h1>Incremental code viewer</h1>
+        <h1>Incremental highlight text viewer</h1>
         <div class="flexible">
             <div id="highlightPane" class="flexNode">
                 <pre><code id="highlightArea" class="hljs"></code></pre>
@@ -563,16 +623,22 @@ window.addEventListener("load", function() {
                         <label for="specificLanguage">Language</label>
                     </div>
                     <div class="prefRow">
+                        <input id="viewerFontFamily" type="text">
+                        <label for="viewerFontFamily">Font Family</label>
+                    </div>
+                    <div class="prefRow">
                         <input id="fontSize" type="number">
                         <label for="fontSize">Font Size</label>
                     </div>
                     <div class="prefRow">
-                        <input id="targetDuration" type="range" min="1" max="10" value="3">
+                        <input id="targetDuration" type="range" min="10" max="10000" value="2000">
                         <label for="targetDuration">Target Duration</label>
+                        <p id="targetDurationValue" class="inprefRow">3000</p>
                     </div>
                     <div class="prefRow">
-                        <input id="fps" type="range" min="1" max="30" value="24">
+                        <input id="fps" type="range" min="1" max="60" value="30">
                         <label for="fps">FPS</label>
+                        <p id="fpsValue" class="inprefRow">30</p>
                     </div>
                     <div class="prefRow">
                         <input id="status" type="text" disabled="true">
