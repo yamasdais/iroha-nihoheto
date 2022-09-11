@@ -59,6 +59,18 @@ auto foo(T&& v) {
 }
 */
 
+function makeCanvas(hlarea, width, height) {
+    const w = width;
+    const h = height;
+    const adjWidth = (w % 2) ? w + 1 : w;
+    const adjHeight = (h % 2) ? h + 1 : h;
+
+    return html2canvas(hlarea, {
+        width: adjWidth,
+        height: adjHeight,
+    });
+}
+
 async function makeImageGenerator(param) {
     // fps: frames per second
     // duration: target duration (ms)
@@ -76,32 +88,20 @@ async function makeImageGenerator(param) {
     }
     const fileNames = [];
 
-    const makeCanvas = hlarea => {
-        const w = width;
-        const h = height;
-        const adjWidth = (w % 2) ? w + 1 : w;
-        const adjHeight = (h % 2) ? h + 1 : h;
-
-        return html2canvas(hlarea, {
-            width: adjWidth,
-            height: adjHeight,
-        });
-    }
-
-    const canvasSize = await makeCanvas(param.hlarea)
+    const canvasSize = await makeCanvas(param.hlarea, width, height)
         .then(canvas => {
             return { w: canvas.width, h: canvas.height }
         });
 
     let imgCache;
     const makeImage = async function(imgIdx, prevIdx, curIdx) {
-        await makeCanvas(param.hlarea)
+        await makeCanvas(param.hlarea, width, height)
             .then(canvas => canvas.toDataURL('image/png'))
             .then(imgURL => {
                 fname = `image${genFileNumber(imgIdx)}.png`;
                 fileNames.push(fname);
                 if (imgCache !== undefined && prevIdx === curIdx) {
-                    param.ffmpeg.FS('writeFile', fname, imgCache);
+                    return param.ffmpeg.FS('writeFile', fname, imgCache);
                 } else {
                     return fetch(imgURL)
                         .then(res => res.blob())
@@ -265,7 +265,7 @@ window.addEventListener("load", function() {
     // PNG button
     document.getElementById("genPngButton").title = "Generate PNG image of current highlighted code pane.";
     document.getElementById("genPngButton").addEventListener("click", obj => {
-        makeCanvas(highlightArea).then(function(canvas) {
+        makeCanvas(highlightArea, highlightArea.clientWidth, highlightArea.clientHeight).then(function(canvas) {
             var link = document.getElementById("downloader");
             link.href = canvas.toDataURL("image/png");
             link.download = "highlight.png";
