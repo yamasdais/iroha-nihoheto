@@ -4,7 +4,6 @@ function getObjectWithInitValue(name, mutator, defaultValue) {
     return ret;
 }
 function storeObjectValue(name, value) {
-    var obj = document.getElementById(name);
     localStorage.setItem(name, value);
 }
 function makeHighlightWorker() {
@@ -30,7 +29,7 @@ auto i = 0;
 
 // foo
 template <class T>
-T foo(T&& v) {
+auto foo(T&& v) {
     return other(std::forward<T>(v));
 }
 */
@@ -135,6 +134,8 @@ window.addEventListener("load", function() {
             current.classList.remove("current");
             nextItem = document.querySelector(`.styles li[title="${newStyle}"]`);
             nextItem.classList.add("current");
+            //localStorage.setItem("selectedStyle", document.querySelector(".styles .current").textContent);
+            localStorage.setItem("selectedStyle", newStyle);
 
         }
     }
@@ -147,6 +148,7 @@ window.addEventListener("load", function() {
     const inputArea = document.getElementById("inputArea");
     const highlightArea = document.getElementById("highlightArea");
     const displayButton = document.getElementById("displayButton");
+    const movieButton = document.getElementById("genMovieButton");
     const languageText = getObjectWithInitValue("specificLanguage", setToValueProperty, "");
     const viewerFontFamily = getObjectWithInitValue("viewerFontFamily", setToValueProperty, "源ノ角ゴシック Code JP");
     const fontSize = getObjectWithInitValue("fontSize", setToValueProperty, 16);
@@ -159,6 +161,9 @@ window.addEventListener("load", function() {
         const isEmpty = !obj.target.value;
         if (displayButton.disabled != isEmpty)
             displayButton.disabled = isEmpty;
+        if (movieButton.disabled != isEmpty)
+            movieButton.disabled = isEmpty;
+        storeObjectValue("specificLanguage", languageText.value);
     });
     languageText.addEventListener("keyup", obj => {
         languageText.dispatchEvent(new Event("change"));
@@ -168,6 +173,7 @@ window.addEventListener("load", function() {
     // font family
     viewerFontFamily.addEventListener("change", obj => {
         viewer.style.fontFamily = viewerFontFamily.value;
+        storeObjectValue("viewerFontFamily", viewerFontFamily.value);
     })
     viewerFontFamily.dispatchEvent(new Event("change"));
 
@@ -177,6 +183,7 @@ window.addEventListener("load", function() {
             fontSize.value = 16;
         }
         viewer.style.fontSize = `${fontSize.value}px`
+        storeObjectValue("fontSize", fontSize.value);
     })
     fontSize.dispatchEvent(new Event("change"));
 
@@ -185,12 +192,18 @@ window.addEventListener("load", function() {
         document.getElementById("targetDurationValue").innerHTML = `${targetDuration.value}ms`;
     })
     targetDuration.dispatchEvent(new Event("input"));
+    targetDuration.addEventListener("change", obj => {
+        storeObjectValue("targetDuration", targetDuration.value);
+    })
 
     // fps
     fps.addEventListener("input", obj => {
         document.getElementById("fpsValue").innerHTML = fps.value;
     })
     fps.dispatchEvent(new Event("input"));
+    fps.addEventListener("change", obj => {
+        storeObjectValue("fps", fps.value);
+    })
 
     // highlight style
     changeStyle(localStorage.getItem("selectedStyle") ?? "Default");
@@ -207,29 +220,12 @@ window.addEventListener("load", function() {
     document.getElementById("prepareButton").addEventListener("click", obj => {
         const text = inputArea.value;
         const lang = languageText.value;
-        storeObjectValue("specificLanguage", lang);
-        storeObjectValue("viewerFontFamily", viewerFontFamily.value);
-        storeObjectValue("fontSize", fontSize.value);
-        storeObjectValue("targetDuration", targetDuration.value);
-        storeObjectValue("fps", fps.value);
-        localStorage.setItem("selectedStyle", document.querySelector(".styles .current").textContent);
-/*         const hilighter = lang
-            ? () => hljs.highlight(text, { language: lang, ignoreIllegals: true })
-            : () => {
-                const h = hljs.highlightAuto(text);
-                languageText.value = h.language ?? "";
-                storeObjectValue("specificLanguage", languageText.value);
-                languageText.dispatchEvent(new Event("change"));
-                return h;
-            }; */
         const hilighter = makeHighlighter(lang, text, l => {
             languageText.value = l ?? "";
-            storeObjectValue("specificLanguage", languageText.value);
             languageText.dispatchEvent(new Event("change"));
         });
         const html = hilighter();
         highlightArea.innerHTML = html.value;
-        //viewer.style.fontFamily = "源ノ角ゴシック Code JP";
     });
     // PNG button
     document.getElementById("genPngButton").addEventListener("click", obj => {
@@ -275,7 +271,7 @@ window.addEventListener("load", function() {
             })
             .then(movie => {
                 const link = document.getElementById("downloader");
-                link.href = URL.createObjectURL(new Blob([movie.buffer], { type: 'video.mp4' }));
+                link.href = URL.createObjectURL(new Blob([movie.buffer], { type: 'video/mp4' }));
                 link.download = "output.mp4";
                 link.target = '_blank';
                 link.click();
