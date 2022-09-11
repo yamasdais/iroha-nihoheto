@@ -1,3 +1,28 @@
+/*
+* Incremental Highlighted Text Movie Maker
+* Copyright:  yamasdais @ github
+* License: MIT License
+*
+* TODO:
+* * エラー処理きちんと
+* * 試作的なコードをもうちょっと整理する
+* PLAN:
+* * ffmpeg の置き場所をどっか cdn に変える。
+*     -> COOP/COEP 設定を unsafe-non にしないといけない様なのでボツ
+* * 出力形式を切り替えられるようにする
+* * 背景色透過にして出力できるようにする。
+* * フレーム画像を png から raw に出来ないか検討
+* * カーソル文字を変更できるように
+* * 使い方を書く
+*     -> ツールチップ追加
+* * i18n 対応
+* * ffmpeg log 表示をオプションに
+* * 開始文字位置を設定できる様にする
+* * テキストを挿入する動きが出来るようにする
+* * 見栄えをもうちょっと何とかする
+*     -> ちょっとマシにしたつもり
+*/
+
 function getObjectWithInitValue(name, mutator, defaultValue) {
     var ret = document.getElementById(name)
     mutator(ret, localStorage.getItem(name) ?? defaultValue);
@@ -43,7 +68,7 @@ async function makeImageGenerator(param) {
     const width = param.hlarea.clientWidth;
     const height = param.hlarea.clientHeight;
     const end = Math.round(totalFrames);
-    const retSize = end + 1;
+    const retSize = end + 2;
     const frameNumLength = ("" + (retSize)).length;
     const genFileNumber = function(num) {
         token = "0".repeat(frameNumLength);
@@ -51,7 +76,7 @@ async function makeImageGenerator(param) {
     }
     const fileNames = [];
 
-    function makeCanvas(hlarea) {
+    const makeCanvas = hlarea => {
         const w = width;
         const h = height;
         const adjWidth = (w % 2) ? w + 1 : w;
@@ -68,16 +93,24 @@ async function makeImageGenerator(param) {
             return { w: canvas.width, h: canvas.height }
         });
 
-    const makeImage = async function(i) {
+    let imgCache;
+    const makeImage = async function(imgIdx, prevIdx, curIdx) {
         await makeCanvas(param.hlarea)
             .then(canvas => canvas.toDataURL('image/png'))
             .then(imgURL => {
-                fname = `image${genFileNumber(i)}.png`;
+                fname = `image${genFileNumber(imgIdx)}.png`;
                 fileNames.push(fname);
-                return fetch(imgURL)
-                    .then(res => res.blob())
-                    .then(blob => blob.arrayBuffer())
-                    .then(buf => param.ffmpeg.FS('writeFile', fname, new Uint8Array(buf)));
+                if (imgCache !== undefined && prevIdx === curIdx) {
+                    param.ffmpeg.FS('writeFile', fname, imgCache);
+                } else {
+                    return fetch(imgURL)
+                        .then(res => res.blob())
+                        .then(blob => blob.arrayBuffer())
+                        .then(buf => {
+                            imgCache = new Uint8Array(buf);
+                            param.ffmpeg.FS('writeFile', fname, imgCache);
+                        });
+                }
             })
             ;
     }
@@ -92,25 +125,25 @@ async function makeImageGenerator(param) {
         param.hlarea.width = width;
         param.hlarea.height = height;
 
-        await makeImage(imgIdx++);
+        await makeImage(imgIdx++, prev, undefined);
         for (i = 0; i < end; i++) {
             cur = Math.round(progress);
             if (cur !== prev) {
                 res = hljs.highlight(param.text.substring(0, cur), { language: param.lang, ignoreIllegals: true });
                 param.hlarea.innerHTML = res.value + (textCursorEnabled ? "\u2588" : "");
-                await makeImage(imgIdx++);
             }
+            await makeImage(imgIdx++, prev, cur);
             progress += incPerFrame;
             prev = cur;
         }
         // +1 final image with cursor
         res = hljs.highlight(param.text, { language: param.lang, ignoreIllegals: true });
         param.hlarea.innerHTML = res.value + (textCursorEnabled ? "\u2588" : "");
-        await makeImage(imgIdx++);
+        await makeImage(imgIdx++, prev, undefined);
         // +1 final image
         res = hljs.highlight(param.text, { language: param.lang, ignoreIllegals: true });
         param.hlarea.innerHTML = res.value;
-        await makeImage(imgIdx++);
+        await makeImage(imgIdx++, prev, undefined);
 
         return {
             width: (canvasSize.w % 2) ? canvasSize.w - 1 : canvasSize.w,
@@ -209,6 +242,7 @@ window.addEventListener("load", function() {
     changeStyle(localStorage.getItem("selectedStyle") ?? "Default");
 
     // Refresh button
+    document.getElementById("refreshButton").title = "Press before changing the code";
     document.getElementById("refreshButton").addEventListener("click", obj => {
         inputArea.select();
         languageText.value = "";
@@ -217,6 +251,7 @@ window.addEventListener("load", function() {
     })
 
     // Ready button
+    document.getElementById("prepareButton").title = "Make the entire highlighted code on the view. if language is undefined, highlight.js will deduce it.";
     document.getElementById("prepareButton").addEventListener("click", obj => {
         const text = inputArea.value;
         const lang = languageText.value;
@@ -228,6 +263,7 @@ window.addEventListener("load", function() {
         highlightArea.innerHTML = html.value;
     });
     // PNG button
+    document.getElementById("genPngButton").title = "Generate PNG image of current highlighted code pane.";
     document.getElementById("genPngButton").addEventListener("click", obj => {
         makeCanvas(highlightArea).then(function(canvas) {
             var link = document.getElementById("downloader");
@@ -239,7 +275,8 @@ window.addEventListener("load", function() {
     });
 
     // movie button
-    this.document.getElementById("genMovieButton").addEventListener("click", async obj => {
+    document.getElementById("genMovieButton").title = "Generate movie file of accumulating code. To run this, http server must return COOP/COEP entries in the response header";
+    document.getElementById("genMovieButton").addEventListener("click", async obj => {
         const fpsVal = parseFloat(fps.value)
         if (!ffmpeg.isLoaded())
             await ffmpeg.load();
@@ -280,6 +317,7 @@ window.addEventListener("load", function() {
     })
 
     // Go button
+    displayButton.title = "You can see accumulated highlight code. Language must be specified to press";
     displayButton.addEventListener("click", obj => {
         const text = inputArea.value;
         const lang = languageText.value;
