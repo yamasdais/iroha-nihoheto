@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <html lang="jp">
+    <!--
+* Incremental Highlighted Text Movie Maker
+* Copyright:  yamasdais @ github
+* License: MIT License
+    -->
     <head>
         <!--
-            TODO:
+            py webservice.py
+            browse http://localhost:8888/InputMachine.html
+        -->
+        <!--
             スタイル変更
         -->
         <meta http-equiv="Content-Type" content="application/html; charset=utf-8"/>
@@ -254,6 +262,15 @@
         <link rel="alternate stylesheet" title="Xt256" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/xt256.min.css" disabled="disabled"/>
 
         <style>
+body {
+    background-color: #74c6f1;
+    font-family: serif;
+
+}
+
+h1 {
+    font-size: smaller;
+}
 
 div.flexible {
     border: 1px solid;
@@ -274,23 +291,53 @@ div.flexible {
 }
 #highlightPane {
     width: 50%;
-
+    background: repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%)
+                50% / 40px 40px;
 }
 #inputPane {
     width: 50%;
-    min-width: 20px;
-    margin-left: 30px;
+    min-width: 12px;
+    margin-left: 20px;
+    background: #2988bc;
 }
 #inputArea {
     width: 100%;
     height: 80%;
+    background: #f4eade;
 }
 #buttonArea {
     display: flex;
     margin-left: auto;
     margin-right: auto;
-    width: 50%;
+    margin-bottom: 4px;
+    justify-content: center;
 }
+
+#buttonArea button {
+    font-family: sans-serif;
+    appearance: none;
+    border: 0;
+    border-radius: 5px;
+    background: #ed8c72;
+    color: #fff;
+    padding: 2px 4px;
+    margin: 2px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+#buttonArea button:hover {
+    background: #e59882;
+}
+#buttonArea button:focus {
+    outline: none;
+    background: #e59882;
+}
+#buttonArea button:disabled {
+    outline: none;
+    background: #eac9c0;
+    cursor: default;
+}
+
 .prefRow {
     display: flex;
 }
@@ -300,16 +347,19 @@ label {
     width: 8em;
     padding-right: 0.5em;
     text-align: right;
+    font-weight: bolder;
+    color: #f4eade;
 }
 
 input {
     order: 2;
     flex: 1 1 auto;
+    background: #f4eade;
 }
 
 .styleList {
     order: 2;
-    background: rgb(218, 198, 198);
+    background: #60a3c7;
     bottom: 0;
     display: flex;
     flex-direction: column;
@@ -317,6 +367,7 @@ input {
     top: 0;
     width: 14em;
     max-height: 20em;
+    font-family: sans-serif;
 }
 
 p.inprefRow {
@@ -324,6 +375,7 @@ p.inprefRow {
     margin: 0px 4px 0px 2px;
     width: 15%;
     font-size: smaller;
+    color: #f4eade;
 }
 .styles {
     flex: 1 1 50%;
@@ -348,41 +400,42 @@ p.inprefRow {
 }
 
 .styleList ul::-webkit-scrollbar-track {
-    background: #4d0607;
+    background: #f4eade;
     border-radius: 5px;
 }
 
 .styleList ul::-webkit-scrollbar-thumb {
-    background: #926868;
-    border-right: 1px solid #4d0607;
-    border-left: 1px solid #4d0607;
+    background: #3043a4;
+    border-right: 1px solid #3124c6;
+    border-left: 1px solid #3124c6;
     border-radius: 5px;
 }
 
 .styleList ul::-webkit-scrollbar-thumb:hover {
-    background: #7f5555;
+    background: #5396fb;
 }
 
 .styleList ul::-webkit-scrollbar-thumb:active {
-    background: #5d3333;
+    background: #5396fb;
 }
 
 .styleList ul li {
     display: block;
     padding: 1px 0.5em 1px 1em;
     text-decoration: none;
+    color: #040404;
 }
 
 .styleList ul li:focus,
 .styleList ul li:hover {
-  background: #500;
-  color: #aaa;
+  background: #4f6f9c;
+  color: #ddd;
   outline: none;
 }
 
-.current {
-  background: #700;
-  color: #ccc;
+.styleList li.current {
+  background: #2f496e;
+  color: #c0c0c0;
   font-weight: bolder;
   outline: none;
 }
@@ -396,7 +449,7 @@ p.inprefRow {
         </style>
         <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-        <script type="text/javascript" src="https://unpkg.com/browse/@ffmpeg/ffmpeg@0.11.4/dist/ffmpeg.min.js"></script>
+        <script src="./lib/ffmpeg.min.js"></script>
         <script id="highlightWorker" language="javascript" type="javascript/worker">
 importScripts("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js");
 onmessage = e => {
@@ -405,219 +458,31 @@ onmessage = e => {
     postMessage( { value: result.value, relevance: result.relevance, illegal: result.illegal });
 };
         </script>
-        <script>
-function getObjectWithInitValue(name, mutator, defaultValue) {
-    var ret = document.getElementById(name)
-    mutator(ret, localStorage.getItem(name) ?? defaultValue);
-    return ret;
-}
-function storeObjectValue(name, value) {
-    var obj = document.getElementById(name);
-    localStorage.setItem(name, value);
-}
-window.addEventListener("load", function() {
-    const setToValueProperty = (x, v) => x.value = v;
-    const changeStyle = function(newStyle) {
-        const current = document.querySelector(".styles .current");
-        const currentStyle = current.textContent;
-        if (currentStyle !== newStyle) {
-            document.querySelector(`link[title="${newStyle}"`)
-                .removeAttribute("disabled");
-            document.querySelector(`link[title="${currentStyle}"`)
-                .setAttribute("disabled", "disabled");
-
-            current.classList.remove("current");
-            nextItem = document.querySelector(`.styles li[title="${newStyle}"]`);
-            nextItem.classList.add("current");
-
-        }
-    }
-
-    const inputArea = document.getElementById("inputArea");
-    const highlightArea = document.getElementById("highlightArea");
-    const displayButton = document.getElementById("displayButton");
-    //const languageText = document.getElementById("specificLanguage");
-    const languageText = getObjectWithInitValue("specificLanguage", setToValueProperty);
-    //const fontSize = document.getElementById("fontSize");
-    const viewerFontFamily = getObjectWithInitValue("viewerFontFamily", setToValueProperty, "源ノ角ゴシック Code JP");
-    const fontSize = getObjectWithInitValue("fontSize", setToValueProperty, 16);
-    //const targetDuration = document.getElementById("targetDuration");
-    const targetDuration = getObjectWithInitValue("targetDuration", setToValueProperty);
-    const fps = getObjectWithInitValue("fps", setToValueProperty);
-    const viewer = document.getElementById("highlightArea");
-
-    // language text input
-    languageText.addEventListener("change", obj => {
-        const isEmpty = !obj.target.value;
-        if (displayButton.disabled != isEmpty)
-            displayButton.disabled = isEmpty;
-    });
-    languageText.addEventListener("keyup", obj => {
-        languageText.dispatchEvent(new Event("change"));
-    });
-    languageText.dispatchEvent(new Event("change"));
-    
-    // font family
-    viewerFontFamily.addEventListener("change", obj => {
-        viewer.style.fontFamily = viewerFontFamily.value;
-    })
-    viewerFontFamily.dispatchEvent(new Event("change"));
-
-    // font size
-    fontSize.addEventListener("change", obj => {
-        if (!fontSize.value) {
-            fontSize.value = 16;
-        }
-        viewer.style.fontSize = `${fontSize.value}px`
-    })
-    fontSize.dispatchEvent(new Event("change"));
-
-    // target duration
-    targetDuration.addEventListener("input", obj => {
-        document.getElementById("targetDurationValue").innerHTML = `${targetDuration.value}ms`;
-    })
-    targetDuration.dispatchEvent(new Event("input"));
-
-    // fps
-    fps.addEventListener("input", obj => {
-        document.getElementById("fpsValue").innerHTML = fps.value;
-    })
-    fps.dispatchEvent(new Event("input"));
-
-    changeStyle(localStorage.getItem("selectedStyle") ?? "Default");
-    // Refresh button
-    document.getElementById("refreshButton").addEventListener("click", obj => {
-        inputArea.select();
-        languageText.value = "";
-        languageText.dispatchEvent(new Event("change"));
-        highlightArea.innerHTML = "";
-    })
-
-    // Ready button
-    document.getElementById("prepareButton").addEventListener("click", obj => {
-        const text = inputArea.value;
-        const lang = languageText.value;
-        storeObjectValue("specificLanguage", lang);
-        storeObjectValue("viewerFontFamily", viewerFontFamily.value);
-        storeObjectValue("fontSize", fontSize.value);
-        storeObjectValue("targetDuration", targetDuration.value);
-        storeObjectValue("fps", fps.value);
-        localStorage.setItem("selectedStyle", document.querySelector(".styles .current").textContent);
-        const hilighter = lang
-            ? () => hljs.highlight(text, { language: lang, ignoreIllegals: true })
-            : () => {
-                const h = hljs.highlightAuto(text);
-                languageText.value = h.language ?? "";
-                storeObjectValue("specificLanguage", languageText.value);
-                languageText.dispatchEvent(new Event("change"));
-                return h;
-            };
-        const html = hilighter();
-        highlightArea.innerHTML = html.value;
-        //viewer.style.fontFamily = "源ノ角ゴシック Code JP";
-    });
-    // PNG button
-    document.getElementById("genPngButton").addEventListener("click", obj => {
-        html2canvas(highlightArea).then(function(canvas) {
-            var link = document.getElementById("downloader");
-            link.href = canvas.toDataURL("image/png");
-            link.download = "highlight.png";
-            link.target = '_blank';
-            link.click();
-        })
-    });
-
-    // Go button
-    displayButton.addEventListener("click", obj => {
-        const text = inputArea.value;
-        const lang = languageText.value;
-        if (!lang) {
-            alert("language must be specified explicitly");
-            return;
-        }
-        const textCount = text.length;
-        const fpsVal = parseFloat(fps.value)
-        const duration = parseFloat(targetDuration.value);
-        const incPerFrame = textCount / (fpsVal * duration / 1000);
-        const frameMS = Math.min(1000 / fpsVal, textCount / incPerFrame);
-        const status = document.getElementById("status");
-        const durationResult = document.getElementById("duration");
-
-        const blob = new Blob([document.getElementById("highlightWorker").textContent], 
-                 { type: 'text/javascript'});
-        const worker = new Worker(window.URL.createObjectURL(blob));
-        let wasError = false;
-        let textCursorEnabled = true;
-        worker.addEventListener("message", e => {
-            highlightArea.innerHTML = e.data.value + (textCursorEnabled ? "\u2588" : "");
-        });
-        worker.addEventListener("error", e => {
-            wasError = true;
-            alert(e.message)
-        });
-        //highlightArea.style.minHeight = highlightArea.clientHeight + "px";
-        highlightArea.innerHTML = "";
-        durationResult.value = "";
-        let i = prev = 0;
-        const startTime = performance.now();
-        const timerId = setInterval(() => {
-            if (wasError) {
-                clearInterval(timerId);
-            } else {
-                status.value = i + "/" + textCount
-                worker.postMessage({language: lang, text: text.substring(0, i)})
-                prev = i;
-                i += incPerFrame;
-                if (i >= textCount) {
-                    clearInterval(timerId);
-                    textCursorEnabled = false;
-                    worker.postMessage({ language: lang, text: text });
-                    const realDuration = performance.now() - startTime;
-                    durationResult.value = realDuration + " ms";
-                }
-            }
-        }, frameMS);
-    });
-
-    // style list
-    document.querySelectorAll(".styles li").forEach(elem => {
-        elem.addEventListener("click", event => {
-            event.preventDefault();
-            changeStyle(event.target.textContent);
-            /*
-            const current = document.querySelector(".styles .current");
-            const currentStyle = current.textContent;
-            const nextStyle = event.target.textContent;
-            if (currentStyle !== nextStyle) {
-                document.querySelector(`link[title="${nextStyle}"`)
-                    .removeAttribute("disabled");
-                document.querySelector(`link[title="${currentStyle}"`)
-                    .setAttribute("disabled", "disabled");
-
-                current.classList.remove("current");
-                event.target.classList.add("current");
-            }
-            */
-        })
-    })
-});
-        </script>
+        <script type="text/javascript" src="./incrementalHighlight.js"></script>
     </head>
     <body>
-        <h1>Incremental highlight text viewer</h1>
+        <header>
+            <h1>Incremental Highlight Text Maker</h1>
+            <p>This SPA(single page application) generates highlighted code image and movie of accumulating it.
+               I hope this is useful, but without any warranty.
+               Your *sacred* code will not be uploaded anywhere (unless the site or one of the dependency script's CDNs is cracked and replaced with BAD js files, of course).
+            </p>
+        </header>
+        <main>
         <div class="flexible">
             <div id="highlightPane" class="flexNode">
                 <pre><code id="highlightArea" class="hljs"></code></pre>
             </div>
         
             <div id="inputPane" class="flexNode flexible">
-                <textarea id="inputArea"></textarea>
+                <textarea id="inputArea" placeholder="Put your code here..."></textarea>
                 <div>
                     <div id="buttonArea">
                         <button id="refreshButton" style="margin-right: 12px">Refresh</button>
-                        <button id="prepareButton">Ready</button>
-                        <button id="displayButton" disabled>Go</button>
+                        <button id="prepareButton">Prepare</button>
+                        <button id="displayButton" disabled>Preview</button>
                         <button id="genPngButton">PNG</button>
+                        <button id="genMovieButton" disabled>Movie</button>
                     </div>
                     <div class="prefRow">
                         <input id="specificLanguage" type="text">
@@ -640,14 +505,6 @@ window.addEventListener("load", function() {
                         <input id="fps" type="range" min="1" max="60" value="30">
                         <label for="fps">FPS</label>
                         <p id="fpsValue" class="inprefRow">30</p>
-                    </div>
-                    <div class="prefRow">
-                        <input id="status" type="text" disabled="true">
-                        <label for="status">Status</label>
-                    </div>
-                    <div class="prefRow">
-                        <input id="duration" type="text" disabled="true">
-                        <label for="duration">Duration</label>
                     </div>
                     <div class="prefRow">
                         <label>Style</label>
@@ -901,9 +758,23 @@ window.addEventListener("load", function() {
                             </ul>
                         </div>
                     </div>
+                    <div class="prefRow">
+                        <input id="status" type="text" disabled="true">
+                        <label for="status">Status</label>
+                    </div>
+                    <div class="prefRow">
+                        <input id="duration" type="text" disabled="true">
+                        <label for="duration">Duration</label>
+                    </div>
                 </div>
             </div>
         </div>
+        </main>
+        <footer>
+            <p>Copyright 2022 yamasdais @ github</p>
+            <p>Powered by <a href="https://highlightjs.org/">highlight.js</a>, <a href="https://html2canvas.hertzen.com/">html2canvs</a>,
+            <a href="https://github.com/ffmpegwasm/ffmpeg.wasm">ffmpeg.wasm</a></p>
+        </footer>
         <a id="downloader" style="display: none;"></a>
     </body>
 </html>
