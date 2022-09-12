@@ -1,18 +1,25 @@
 /*
 * Incremental Highlighted Text Movie Maker
-* Copyright:  yamasdais @ github
+* Copyright: 2022 yamasdais @ github
 * License: MIT License
 *
 * TODO:
 * * エラー処理きちんと
+*     -> ffmpeg 使うところは改善
 * * 試作的なコードをもうちょっと整理する
+* * style によっては、まったくハイライトがつかないで image, movie が出来ることがある
+*     -> 多分、html2canvas でオカシイ感じ。html to image ライブラリの利用を検討
+* * 背景の色が最初から一面描画されるようにする
+*     -> 本当は Style を選択したら背景色を変更したかったが、丁度いいイベントが見つからなかったので、処理前にセットして回避
 * PLAN:
 * * ffmpeg の置き場所をどっか cdn に変える。
-*     -> COOP/COEP 設定を unsafe-non にしないといけない様なのでボツ
-* * 出力形式を切り替えられるようにする
+*     -> COOP/COEP 設定がなんかうまくいかない模様
+* * お試しプロジェクトから独立させる。名前を考える。Docker で立ち上がるようにする
 * * 背景色透過にして出力できるようにする。
 * * フレーム画像を png から raw に出来ないか検討
 * * カーソル文字を変更できるように
+* * 動画最後にカーソル文字を残せる時間を指定できるようにする。点滅回数指定できてもいいかも。
+* * 画像ダウンロード時、カーソル文字描画の有無を設定できるようにする
 * * 使い方を書く
 *     -> ツールチップ追加
 * * i18n 対応
@@ -71,6 +78,43 @@ function makeCanvas(hlarea, width, height) {
     });
 }
 
+class MovieFormatItem {
+    constructor(name, ext, mime) {
+        this.name = name;
+        this.ext = ext;
+        this.mime = mime;
+    }
+}
+
+function* getSupportedMovieFormats() {
+    yield new MovieFormatItem("mp4", "mp4", "video/mp4");
+    yield new MovieFormatItem("webm", "webm", "video/webm");
+}
+
+function makeMovieFormats(onChange) {
+    const formatDict = {}
+    selector = document.getElementById("movieFormat");
+    initVal = localStorage.getItem("movieFormat");
+    for (format of getSupportedMovieFormats()) {
+        formatDict[format.name] = format;
+        opt = document.createElement("option")
+        opt.value = format.name;
+        opt.textContent = format.name;
+        if (initVal === format.name) {
+            opt.selected = true;
+        }
+        selector.appendChild(opt);
+    }
+
+    selector.addEventListener("change", obj => {
+        const cur = selector.options[selector.selectedIndex].value;
+        onChange(formatDict[cur]);
+        localStorage.setItem("movieFormat", cur);
+    });
+
+    return formatDict[selector.options[selector.selectedIndex].value];
+}
+
 async function makeImageGenerator(param) {
     // fps: frames per second
     // duration: target duration (ms)
@@ -108,7 +152,7 @@ async function makeImageGenerator(param) {
                         .then(blob => blob.arrayBuffer())
                         .then(buf => {
                             imgCache = new Uint8Array(buf);
-                            param.ffmpeg.FS('writeFile', fname, imgCache);
+                            return param.ffmpeg.FS('writeFile', fname, imgCache);
                         });
                 }
             })
@@ -159,19 +203,20 @@ window.addEventListener("load", function() {
         const current = document.querySelector(".styles .current");
         const currentStyle = current.textContent;
         if (currentStyle !== newStyle) {
-            document.querySelector(`link[title="${newStyle}"`)
-                .removeAttribute("disabled");
+            const newStyleInst = document.querySelector(`link[title="${newStyle}"`);
+            newStyleInst.removeAttribute("disabled");
             document.querySelector(`link[title="${currentStyle}"`)
                 .setAttribute("disabled", "disabled");
 
             current.classList.remove("current");
             nextItem = document.querySelector(`.styles li[title="${newStyle}"]`);
             nextItem.classList.add("current");
-            //localStorage.setItem("selectedStyle", document.querySelector(".styles .current").textContent);
             localStorage.setItem("selectedStyle", newStyle);
-
         }
     }
+    let movFormat = makeMovieFormats(cur => {
+        movFormat = cur;
+    });
     const { createFFmpeg } = FFmpeg;
     const ffmpeg = createFFmpeg({
         corePath: new URL("./lib/ffmpeg-core.js", document.location).href,
@@ -188,6 +233,10 @@ window.addEventListener("load", function() {
     const targetDuration = getObjectWithInitValue("targetDuration", setToValueProperty, 2000);
     const fps = getObjectWithInitValue("fps", setToValueProperty, 30);
     const viewer = document.getElementById("highlightArea");
+    const refrectBackColor = function() {
+        hlbg = getComputedStyle(highlightArea).backgroundColor;
+        document.getElementById('highlightPre').style.background = hlbg;
+    }
 
     // language text input
     languageText.addEventListener("change", obj => {
@@ -261,6 +310,7 @@ window.addEventListener("load", function() {
         });
         const html = hilighter();
         highlightArea.innerHTML = html.value;
+        refrectBackColor();
     });
     // PNG button
     document.getElementById("genPngButton").title = "Generate PNG image of current highlighted code pane.";
@@ -277,6 +327,11 @@ window.addEventListener("load", function() {
     // movie button
     document.getElementById("genMovieButton").title = "Generate movie file of accumulating code. To run this, http server must return COOP/COEP entries in the response header";
     document.getElementById("genMovieButton").addEventListener("click", async obj => {
+        if (!languageText.value) {
+            alert("language must be specified explicitly");
+            return;
+        }
+        refrectBackColor();
         const fpsVal = parseFloat(fps.value)
         if (!ffmpeg.isLoaded())
             await ffmpeg.load();
@@ -288,35 +343,40 @@ window.addEventListener("load", function() {
             text: inputArea.value,
             ffmpeg: ffmpeg,
         });
-        genImages()
+        movieFilename = `text.${movFormat.ext}`;
+        await genImages()
             .then(vals => {
                 movie = ffmpeg.run(
                     '-r', `${fpsVal}`,
                     '-pattern_type', 'glob', '-i', 'image*.png',
                     '-s', `${vals.width}x${vals.height}`,
                     '-pix_fmt', 'yuv420p',
-                    'output.mp4');
+                    movieFilename);
                 return [ vals, movie ];
             })
             .then(vals => {
                 return vals[1].then(v => {
-                    for (f of vals[0].fileNames) {
-                        ffmpeg.FS('unlink', f);
-                    }
-                    return ffmpeg.FS('readFile', 'output.mp4');
+                    // ffmpeg.exit するようにしたので、unlink は要らない？
+                    // for (f of vals[0].fileNames) {
+                    //     ffmpeg.FS('unlink', f);
+                    // }
+                    return ffmpeg.FS('readFile', movieFilename);
                 })
             })
             .then(movie => {
                 const link = document.getElementById("downloader");
-                link.href = URL.createObjectURL(new Blob([movie.buffer], { type: 'video/mp4' }));
-                link.download = "output.mp4";
+                link.href = URL.createObjectURL(new Blob([movie.buffer], { type: movFormat.mime }));
+                link.download = movieFilename;
                 link.target = '_blank';
                 link.click();
-            });
+            })
+            .catch(alert);
+
+        await ffmpeg.exit();
 
     })
 
-    // Go button
+    // Preview button
     displayButton.title = "You can see accumulated highlight code. Language must be specified to press";
     displayButton.addEventListener("click", obj => {
         const text = inputArea.value;
@@ -325,6 +385,7 @@ window.addEventListener("load", function() {
             alert("language must be specified explicitly");
             return;
         }
+        refrectBackColor();
         const textCount = text.length;
         const fpsVal = parseFloat(fps.value)
         const duration = parseFloat(targetDuration.value);

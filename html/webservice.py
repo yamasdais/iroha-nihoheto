@@ -4,6 +4,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 class SharedArrayBufferEnabled(SimpleHTTPRequestHandler):
     def end_headers(self) -> None:
+        #self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
         self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
         super().end_headers()

@@ -294,6 +294,11 @@ div.flexible {
     background: repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%)
                 50% / 40px 40px;
 }
+#highlightPre {
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+}
 #inputPane {
     width: 50%;
     min-width: 12px;
@@ -351,7 +356,12 @@ label {
     color: #f4eade;
 }
 
-input {
+.prefRow input {
+    order: 2;
+    flex: 1 1 auto;
+    background: #f4eade;
+}
+.prefRow select {
     order: 2;
     flex: 1 1 auto;
     background: #f4eade;
@@ -449,6 +459,8 @@ p.inprefRow {
         </style>
         <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+        <!--unpkg は .js の mime type を text/html で返してくるからか、crossorigin 属性が効かない-->
+        <!--<script type="text/javascript" src="https://unpkg.com/browse/@ffmpeg/ffmpeg@0.11.5/dist/ffmpeg.min.js" crossorigin="anonymous"></script>-->
         <script src="./lib/ffmpeg.min.js"></script>
         <script id="highlightWorker" language="javascript" type="javascript/worker">
 importScripts("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js");
@@ -471,7 +483,7 @@ onmessage = e => {
         <main>
         <div class="flexible">
             <div id="highlightPane" class="flexNode">
-                <pre><code id="highlightArea" class="hljs"></code></pre>
+                <pre id="highlightPre"><code id="highlightArea" class="hljs"></code></pre>
             </div>
         
             <div id="inputPane" class="flexNode flexible">
@@ -481,7 +493,7 @@ onmessage = e => {
                         <button id="refreshButton" style="margin-right: 12px">Refresh</button>
                         <button id="prepareButton">Prepare</button>
                         <button id="displayButton" disabled>Preview</button>
-                        <button id="genPngButton">PNG</button>
+                        <button id="genPngButton">Image</button>
                         <button id="genMovieButton" disabled>Movie</button>
                     </div>
                     <div class="prefRow">
@@ -766,13 +778,18 @@ onmessage = e => {
                         <input id="duration" type="text" disabled="true">
                         <label for="duration">Duration</label>
                     </div>
+                    <div class="prefRow" style="margin-top: 4px">
+                        <select id="movieFormat">
+                        </select>
+                        <label for="movieFormat">Movie Format</label>
+                    </div>
                 </div>
             </div>
         </div>
         </main>
         <footer>
             <p>Copyright 2022 yamasdais @ github</p>
-            <p>Powered by <a href="https://highlightjs.org/">highlight.js</a>, <a href="https://html2canvas.hertzen.com/">html2canvs</a>,
+            <p>Powered by <a href="https://highlightjs.org/">highlight.js</a>, <a href="https://html2canvas.hertzen.com/">html2canvas</a>,
             <a href="https://github.com/ffmpegwasm/ffmpeg.wasm">ffmpeg.wasm</a></p>
         </footer>
         <a id="downloader" style="display: none;"></a>
