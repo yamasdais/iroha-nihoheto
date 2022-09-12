@@ -356,7 +356,12 @@ label {
     color: #f4eade;
 }
 
-input {
+.prefRow input {
+    order: 2;
+    flex: 1 1 auto;
+    background: #f4eade;
+}
+.prefRow select {
     order: 2;
     flex: 1 1 auto;
     background: #f4eade;
@@ -488,7 +493,7 @@ onmessage = e => {
                         <button id="refreshButton" style="margin-right: 12px">Refresh</button>
                         <button id="prepareButton">Prepare</button>
                         <button id="displayButton" disabled>Preview</button>
-                        <button id="genPngButton">PNG</button>
+                        <button id="genPngButton">Image</button>
                         <button id="genMovieButton" disabled>Movie</button>
                     </div>
                     <div class="prefRow">
@@ -773,13 +778,18 @@ onmessage = e => {
                         <input id="duration" type="text" disabled="true">
                         <label for="duration">Duration</label>
                     </div>
+                    <div class="prefRow" style="margin-top: 4px">
+                        <select id="movieFormat">
+                        </select>
+                        <label for="movieFormat">Movie Format</label>
+                    </div>
                 </div>
             </div>
         </div>
         </main>
         <footer>
             <p>Copyright 2022 yamasdais @ github</p>
-            <p>Powered by <a href="https://highlightjs.org/">highlight.js</a>, <a href="https://html2canvas.hertzen.com/">html2canvs</a>,
+            <p>Powered by <a href="https://highlightjs.org/">highlight.js</a>, <a href="https://html2canvas.hertzen.com/">html2canvas</a>,
             <a href="https://github.com/ffmpegwasm/ffmpeg.wasm">ffmpeg.wasm</a></p>
         </footer>
         <a id="downloader" style="display: none;"></a>

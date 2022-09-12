@@ -8,7 +8,7 @@
 *     -> ffmpeg 使うところは改善
 * * 試作的なコードをもうちょっと整理する
 * * style によっては、まったくハイライトがつかないで image, movie が出来ることがある
-*     -> 多分、html2canvas でオカシイ感じ
+*     -> 多分、html2canvas でオカシイ感じ。html to image ライブラリの利用を検討
 * * 背景の色が最初から一面描画されるようにする
 *     -> 本当は Style を選択したら背景色を変更したかったが、丁度いいイベントが見つからなかったので、処理前にセットして回避
 * PLAN:
@@ -77,6 +77,43 @@ function makeCanvas(hlarea, width, height) {
         width: adjWidth,
         height: adjHeight,
     });
+}
+
+class MovieFormatItem {
+    constructor(name, ext, mime) {
+        this.name = name;
+        this.ext = ext;
+        this.mime = mime;
+    }
+}
+
+function* getSupportedMovieFormats() {
+    yield new MovieFormatItem("mp4", "mp4", "video/mp4");
+    yield new MovieFormatItem("webm", "webm", "video/webm");
+}
+
+function makeMovieFormats(onChange) {
+    const formatDict = {}
+    selector = document.getElementById("movieFormat");
+    initVal = localStorage.getItem("movieFormat");
+    for (format of getSupportedMovieFormats()) {
+        formatDict[format.name] = format;
+        opt = document.createElement("option")
+        opt.value = format.name;
+        opt.textContent = format.name;
+        if (initVal === format.name) {
+            opt.selected = true;
+        }
+        selector.appendChild(opt);
+    }
+
+    selector.addEventListener("change", obj => {
+        const cur = selector.options[selector.selectedIndex].value;
+        onChange(formatDict[cur]);
+        localStorage.setItem("movieFormat", cur);
+    });
+
+    return formatDict[selector.options[selector.selectedIndex].value];
 }
 
 async function makeImageGenerator(param) {
@@ -175,10 +212,12 @@ window.addEventListener("load", function() {
             current.classList.remove("current");
             nextItem = document.querySelector(`.styles li[title="${newStyle}"]`);
             nextItem.classList.add("current");
-            //localStorage.setItem("selectedStyle", document.querySelector(".styles .current").textContent);
             localStorage.setItem("selectedStyle", newStyle);
         }
     }
+    let movFormat = makeMovieFormats(cur => {
+        movFormat = cur;
+    });
     const { createFFmpeg } = FFmpeg;
     const ffmpeg = createFFmpeg({
         corePath: new URL("./lib/ffmpeg-core.js", document.location).href,
@@ -305,6 +344,7 @@ window.addEventListener("load", function() {
             text: inputArea.value,
             ffmpeg: ffmpeg,
         });
+        movieFilename = `text.${movFormat.ext}`;
         await genImages()
             .then(vals => {
                 movie = ffmpeg.run(
@@ -312,7 +352,7 @@ window.addEventListener("load", function() {
                     '-pattern_type', 'glob', '-i', 'image*.png',
                     '-s', `${vals.width}x${vals.height}`,
                     '-pix_fmt', 'yuv420p',
-                    'output.mp4');
+                    movieFilename);
                 return [ vals, movie ];
             })
             .then(vals => {
@@ -321,13 +361,13 @@ window.addEventListener("load", function() {
                     // for (f of vals[0].fileNames) {
                     //     ffmpeg.FS('unlink', f);
                     // }
-                    return ffmpeg.FS('readFile', 'output.mp4');
+                    return ffmpeg.FS('readFile', movieFilename);
                 })
             })
             .then(movie => {
                 const link = document.getElementById("downloader");
-                link.href = URL.createObjectURL(new Blob([movie.buffer], { type: 'video/mp4' }));
-                link.download = "output.mp4";
+                link.href = URL.createObjectURL(new Blob([movie.buffer], { type: movFormat.mime }));
+                link.download = movieFilename;
                 link.target = '_blank';
                 link.click();
             })
