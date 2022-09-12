@@ -294,6 +294,11 @@ div.flexible {
     background: repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%)
                 50% / 40px 40px;
 }
+#highlightPre {
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+}
 #inputPane {
     width: 50%;
     min-width: 12px;
@@ -449,6 +454,8 @@ p.inprefRow {
         </style>
         <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+        <!--unpkg は .js の mime type を text/html で返してくるからか、crossorigin 属性が効かない-->
+        <!--<script type="text/javascript" src="https://unpkg.com/browse/@ffmpeg/ffmpeg@0.11.5/dist/ffmpeg.min.js" crossorigin="anonymous"></script>-->
         <script src="./lib/ffmpeg.min.js"></script>
         <script id="highlightWorker" language="javascript" type="javascript/worker">
 importScripts("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js");
@@ -471,7 +478,7 @@ onmessage = e => {
         <main>
         <div class="flexible">
             <div id="highlightPane" class="flexNode">
-                <pre><code id="highlightArea" class="hljs"></code></pre>
+                <pre id="highlightPre"><code id="highlightArea" class="hljs"></code></pre>
             </div>
         
             <div id="inputPane" class="flexNode flexible">

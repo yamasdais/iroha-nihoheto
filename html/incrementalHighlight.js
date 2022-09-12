@@ -6,9 +6,14 @@
 * TODO:
 * * エラー処理きちんと
 * * 試作的なコードをもうちょっと整理する
+* * style によっては、まったくハイライトがつかないで image, movie が出来ることがある
+*     -> 多分、html2canvas でオカシイ感じ
+* * 背景の色が最初から一面描画されるようにする
+*     -> 本当は Style を選択したら背景色を変更したかったが、丁度いいイベントが見つからなかったので、処理前にセットして回避
 * PLAN:
 * * ffmpeg の置き場所をどっか cdn に変える。
-*     -> COOP/COEP 設定を unsafe-non にしないといけない様なのでボツ
+*     -> COOP/COEP 設定がなんかうまくいかない模様
+* * お試しプロジェクトから独立させる。名前を考える。Docker で立ち上がるようにする
 * * 出力形式を切り替えられるようにする
 * * 背景色透過にして出力できるようにする。
 * * フレーム画像を png から raw に出来ないか検討
@@ -159,8 +164,8 @@ window.addEventListener("load", function() {
         const current = document.querySelector(".styles .current");
         const currentStyle = current.textContent;
         if (currentStyle !== newStyle) {
-            document.querySelector(`link[title="${newStyle}"`)
-                .removeAttribute("disabled");
+            const newStyleInst = document.querySelector(`link[title="${newStyle}"`);
+            newStyleInst.removeAttribute("disabled");
             document.querySelector(`link[title="${currentStyle}"`)
                 .setAttribute("disabled", "disabled");
 
@@ -169,7 +174,6 @@ window.addEventListener("load", function() {
             nextItem.classList.add("current");
             //localStorage.setItem("selectedStyle", document.querySelector(".styles .current").textContent);
             localStorage.setItem("selectedStyle", newStyle);
-
         }
     }
     const { createFFmpeg } = FFmpeg;
@@ -188,6 +192,10 @@ window.addEventListener("load", function() {
     const targetDuration = getObjectWithInitValue("targetDuration", setToValueProperty, 2000);
     const fps = getObjectWithInitValue("fps", setToValueProperty, 30);
     const viewer = document.getElementById("highlightArea");
+    const refrectBackColor = function() {
+        hlbg = getComputedStyle(highlightArea).backgroundColor;
+        document.getElementById('highlightPre').style.background = hlbg;
+    }
 
     // language text input
     languageText.addEventListener("change", obj => {
@@ -261,6 +269,7 @@ window.addEventListener("load", function() {
         });
         const html = hilighter();
         highlightArea.innerHTML = html.value;
+        refrectBackColor();
     });
     // PNG button
     document.getElementById("genPngButton").title = "Generate PNG image of current highlighted code pane.";
@@ -277,6 +286,11 @@ window.addEventListener("load", function() {
     // movie button
     document.getElementById("genMovieButton").title = "Generate movie file of accumulating code. To run this, http server must return COOP/COEP entries in the response header";
     document.getElementById("genMovieButton").addEventListener("click", async obj => {
+        if (!languageText.value) {
+            alert("language must be specified explicitly");
+            return;
+        }
+        refrectBackColor();
         const fpsVal = parseFloat(fps.value)
         if (!ffmpeg.isLoaded())
             await ffmpeg.load();
@@ -316,7 +330,7 @@ window.addEventListener("load", function() {
 
     })
 
-    // Go button
+    // Preview button
     displayButton.title = "You can see accumulated highlight code. Language must be specified to press";
     displayButton.addEventListener("click", obj => {
         const text = inputArea.value;
@@ -325,6 +339,7 @@ window.addEventListener("load", function() {
             alert("language must be specified explicitly");
             return;
         }
+        refrectBackColor();
         const textCount = text.length;
         const fpsVal = parseFloat(fps.value)
         const duration = parseFloat(targetDuration.value);
