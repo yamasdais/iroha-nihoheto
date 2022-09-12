@@ -1,10 +1,11 @@
 /*
 * Incremental Highlighted Text Movie Maker
-* Copyright:  yamasdais @ github
+* Copyright: 2022 yamasdais @ github
 * License: MIT License
 *
 * TODO:
 * * エラー処理きちんと
+*     -> ffmpeg 使うところは改善
 * * 試作的なコードをもうちょっと整理する
 * * style によっては、まったくハイライトがつかないで image, movie が出来ることがある
 *     -> 多分、html2canvas でオカシイ感じ
@@ -18,6 +19,8 @@
 * * 背景色透過にして出力できるようにする。
 * * フレーム画像を png から raw に出来ないか検討
 * * カーソル文字を変更できるように
+* * 動画最後にカーソル文字を残せる時間を指定できるようにする。点滅回数指定できてもいいかも。
+* * 画像ダウンロード時、カーソル文字描画の有無を設定できるようにする
 * * 使い方を書く
 *     -> ツールチップ追加
 * * i18n 対応
@@ -113,7 +116,7 @@ async function makeImageGenerator(param) {
                         .then(blob => blob.arrayBuffer())
                         .then(buf => {
                             imgCache = new Uint8Array(buf);
-                            param.ffmpeg.FS('writeFile', fname, imgCache);
+                            return param.ffmpeg.FS('writeFile', fname, imgCache);
                         });
                 }
             })
@@ -302,7 +305,7 @@ window.addEventListener("load", function() {
             text: inputArea.value,
             ffmpeg: ffmpeg,
         });
-        genImages()
+        await genImages()
             .then(vals => {
                 movie = ffmpeg.run(
                     '-r', `${fpsVal}`,
@@ -314,9 +317,10 @@ window.addEventListener("load", function() {
             })
             .then(vals => {
                 return vals[1].then(v => {
-                    for (f of vals[0].fileNames) {
-                        ffmpeg.FS('unlink', f);
-                    }
+                    // ffmpeg.exit するようにしたので、unlink は要らない？
+                    // for (f of vals[0].fileNames) {
+                    //     ffmpeg.FS('unlink', f);
+                    // }
                     return ffmpeg.FS('readFile', 'output.mp4');
                 })
             })
@@ -326,7 +330,10 @@ window.addEventListener("load", function() {
                 link.download = "output.mp4";
                 link.target = '_blank';
                 link.click();
-            });
+            })
+            .catch(alert);
+
+        await ffmpeg.exit();
 
     })
 
